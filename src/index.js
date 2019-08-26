@@ -1,4 +1,6 @@
 
+import { connect as RRConnect } from 'react-redux';
+
 import Wrapper from './wrapper';
 import { STATES } from './networking/states';
 
@@ -17,9 +19,4 @@ export const DataActions = DActions;
 export const NetworkSelectors = NSelectors;
 export const DataSelectors = DSelectors;
 
-
-// import * as globalReferenceDataActions from '../../../REDUX/store/global-redux/referenceData/actions';
-// import * as globalNetworkingActions from '../../../REDUX/store/global-redux/networking/actions';
-
-// import { makeGetReferenceData } from '../../../REDUX/store/global-redux/referenceData/selectors';
-// import { makeGetNetworkData } from '../../../REDUX/store/global-redux/networking/selectors';
+export const connect = RRConnect;
