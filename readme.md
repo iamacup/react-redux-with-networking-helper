@@ -87,6 +87,8 @@ There are two different API's - the Data API and the Network API. There is no li
 <details><summary>DataActions.setData(location, data, keys = null)</summary>
 <p>
 
+`DataActions.setData(location, data, keys = null)`
+
 Overrides any element at the current location with the data specified. See keys note below for description.
 
 </p>
@@ -94,6 +96,8 @@ Overrides any element at the current location with the data specified. See keys 
 
 <details><summary>DataActions.mergeData(location, data, keys = null)</summary>
 <p>
+
+`DataActions.mergeData(location, data, keys = null)`
 
 Uses `Object.assign({}, currentStateAtLocation, data)` to mutate the state
 
@@ -103,6 +107,8 @@ Uses `Object.assign({}, currentStateAtLocation, data)` to mutate the state
 <details><summary>DataActions.concatFirstData(location, data)</summary>
 <p>
 
+`DataActions.concatFirstData(location, data)`
+
 Uses `locationState = data.concat(currentStateAtLocation);` to add the existing state (assuming it is an array) to the end of the data you are inserting, if the `data` value is not an array it will be converted to an array prior to concatenation.
 
 </p>
@@ -110,6 +116,8 @@ Uses `locationState = data.concat(currentStateAtLocation);` to add the existing 
 
 <details><summary>DataActions.concatLastData(location, data)</summary>
 <p>
+
+`DataActions.concatLastData(location, data)`
 
 Uses `locationState = currentStateAtLocation.concat(data);` to add your data to the end of the array at the location, if the data at the location is not an array, it will be overwritten with a blank array.
 
@@ -172,12 +180,12 @@ setData(location, data);
 </details>
 
 
-
-
 ##### Removing data
 
 <details><summary>DataActions.unsetData(location)</summary>
 <p>
+
+`DataActions.unsetData(location)`
 
 Removes data at a specific location from the state.
 
@@ -187,6 +195,8 @@ Removes data at a specific location from the state.
 
 <details><summary>DataActions.clearAllData()</summary>
 <p>
+
+`DataActions.clearAllData()`
 
 Restores the state back to how it was when initialised. Useful for logout type events.
 
@@ -205,6 +215,8 @@ With all of the above stuff in mind about selectors, remember that `makeGet***` 
 
 <details><summary>DataSelectors.makeGetData(cacheName = null)</summary>
 <p>
+
+`DataSelectors.makeGetData(cacheName = null)`
 
 returns a function with the signature
 
@@ -240,9 +252,11 @@ console.log(this.props.alertsCounter); // reads 0 if not defined, something else
 </details>
 
 
-
 <details><summary>DataSelectors.getData()</summary>
 <p>
+
+`DataSelectors.getData()`
+
 
 ```
 const makeMapStateToProps = () => {
@@ -278,6 +292,8 @@ What this is useful for is assigning data to specific keys, all from the same da
 
 <details><summary>DataSelectors.makeGetDataMulti()</summary>
 <p>
+
+`DataSelectors.makeGetDataMulti()`
 
 returns a function with the signature
 
