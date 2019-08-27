@@ -77,7 +77,9 @@ You can also include array indices like this
 
 There are two different API's - the Data API and the Network API. There is no link from the Data API to the Network API, but there is a link from the Network API to the Data API - that is to say, network requests can modify the 'global state'.
 
-### The Data API
+
+<details><summary>The Data API</summary>
+<p>
 
 #### Actions (DataActions)
 
@@ -393,6 +395,9 @@ console.log(this.props.globalData.userAlertsCounter); // contains teh value in u
 </details>
 
 
+</p>
+</details>
+
 ### The Network API
 
 TODO
@@ -428,7 +433,7 @@ TODO
 </details>
 
 
-#### Internal structure and how it all slots together (for contributors?)
+## Internal structure and how it all slots together (for contributors?)
 
 TODO
 
