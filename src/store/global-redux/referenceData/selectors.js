@@ -5,8 +5,8 @@ import merge from 'lodash/merge';
 import createDeepEqualitySelector from '../../../lib/createDeepEqualitySelector';
 import { isDefined } from '../../../lib/isDefined';
 
-// when calling one of the getData functions inside of the return for mapStateToProps you can specify an emptyReturn which will decide what comes back if the thing is not found
-const targetReferenceData = (state, inputLocation, emptyReturn = {}) => {
+// when calling one of the getData functions inside of the return for mapStateToProps you can specify an emptyReturnValue which will decide what comes back if the thing is not found
+const targetReferenceData = (state, inputLocation, emptyReturnValue = {}) => {
   const location = inputLocation.split('.');
 
   // use this to keep a track of current nesting object
@@ -22,7 +22,7 @@ const targetReferenceData = (state, inputLocation, emptyReturn = {}) => {
 
     // we encountered non existant level, just return an empty thing
     if (!isDefined(ref[useLocation])) {
-      return emptyReturn;
+      return emptyReturnValue;
     }
 
     // here we know we have the data
@@ -34,7 +34,7 @@ const targetReferenceData = (state, inputLocation, emptyReturn = {}) => {
     ref = ref[useLocation];
   }
 
-  return emptyReturn;
+  return emptyReturnValue;
 };
 
 const targetReferenceDataMulti = (state, inputLocation) => {
@@ -60,12 +60,13 @@ export const makeGetDataMulti = () => createDeepEqualitySelector(
   data => data,
 );
 
-// export const makeGetData = () => createDeepEqualitySelector(
-//   [
-//     targetReferenceData,
-//   ],
-//   data => data,
-// );
+export const getDataMulti = createDeepEqualitySelector(
+  [
+    targetReferenceDataMulti,
+  ],
+  data => data,
+);
+
 
 // @TODO this could get very large over the period of life of an app, need to clean up
 const locationStore = {};
@@ -74,12 +75,12 @@ const locationStore = {};
 // selector for a given location,
 // or just a unique selector if no
 // location is specified.
-export const makeGetData = (location = null) => {
-  if (isDefined(location)) {
-    if (location in locationStore) {
-      return locationStore[location];
+export const makeGetData = (cacheName = null) => {
+  if (isDefined(cacheName)) {
+    if (cacheName in locationStore) {
+      return locationStore[cacheName];
     }
-    locationStore[location] = createDeepEqualitySelector(
+    locationStore[cacheName] = createDeepEqualitySelector(
       [
         targetReferenceData,
       ],
@@ -87,8 +88,9 @@ export const makeGetData = (location = null) => {
     );
 
 
-    return locationStore[location];
+    return locationStore[cacheName];
   }
+
   return createDeepEqualitySelector(
     [
       targetReferenceData,

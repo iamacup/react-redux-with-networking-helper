@@ -26,6 +26,7 @@ The whole point of this library is to have a single source of data truth - the '
 
 This 'global state' is then updated, either directly through actions on components - i.e. when you need to update the user's current handle - or indirectly through network data - i.e. when you just logged in and need to update the current users object.
 
+There are some subtleties and complexities about this library, i think it is best to use the examples and then delve into the API documentation to understand why things are as they are, rather than the other way around :)
 
 ## Getting Started
 
@@ -59,13 +60,9 @@ TODO
 * Simple network request
 * Paginated network request
 
-## API
+## Locations
 
-There are two different API's - the Data API and the Network API. There is no link from the Data API to the Network API, but there is a link from the Network API to the Data API - that is to say, network requests can modify the 'global state'
-
-### Locations
-
-Locations are specified as string with the folowing syntax to specify what object location to look at:
+Locations are an important part of the library. They are specified as string with the folowing syntax and effectively they dictate where you read and write data:
 
 `some.location.in.the.data.store`
 
@@ -73,8 +70,12 @@ You can also include array indices like this
 
 `some.location.with.an.array.[3].in.the.[0].data.store`
 
-* Whenever putting data into the data store, it will create all levels specified if they do not exist, as objects. 
-* Whenever pulling data out of the data store, traversal stops once a level is reached that does not exist and the default value is returned (an empty object `{}`) or whatever was specified as the default value to the selector
+* Whenever **putting data into the data store**, it will create all levels specified if they do not exist, as objects. 
+* Whenever **pulling data out of the data store**, traversal stops once a level is reached that does not exist and an empty object `{}` is returned or whatever was specified as the default value when creating the selector.
+
+## API
+
+There are two different API's - the Data API and the Network API. There is no link from the Data API to the Network API, but there is a link from the Network API to the Data API - that is to say, network requests can modify the 'global state'.
 
 ### The Data API
 
@@ -153,11 +154,68 @@ setData(location, data);
 
 * `DataActions.unsetData(location)`
 
-Removes data at a specific location from the state
+Removes data at a specific location from the state.
 
 * `DataActions.clearAllData()`
 
 Restores the state back to how it was when initialised. Useful for logout type events.
+
+#### Selectors
+
+Bear in mind that under the hood we are using [Reselect](https://github.com/reduxjs/reselect) for our selectors, there are, therefore, two types of every selector - you can read about this in detail in the [reselect documentation here](https://github.com/reduxjs/reselect) - but the cheatsheet version is - if you only have **one instance** of a component you can use the `get***` function, if you will have multiple instances of a component you need to use the equivelant `makeGet***` function to build your selectors. To be on the safe side, use the `makeGet***` - it only adds 1 additional line of code.
+
+##### Listening to one location
+
+With all of the above stuff in mind about selectors, remember that `makeGet***` will return a function to select on and so the value passed to a `makeGet***` function does *NOT* perform the same function as the location value that is passed to the returned function.
+
+* `makeGetData(cacheName = null)`
+
+returns a function with the signature
+
+* `(state, location, emptyReturnValue = {})`
+
+The optional `cacheName` value instructs the selector to cache the returned function, and additional calls to makeGetData with the same cacheName value will return the same function, make sure that when doing this, the resulting function call also has the same location: **as a tip** use the location as the cacheName.
+
+This returns a function that can be used to select data like this:
+
+```
+const makeMapStateToProps = () => {
+  const getData = DataSelectors.makeGetData();
+
+  function mapStateToProps(state) {
+    return {
+      _alertsCounter: getData(state, 'user.alerts.counter', 0),
+    };
+  }
+
+  return mapStateToProps;
+};
+```
+
+Which will return the data in user.alerts.counter, or 0 if it does not exist.
+
+* `getData()`
+
+```
+const makeMapStateToProps = () => {
+  function mapStateToProps(state) {
+    return {
+      _alertsCounter: DataSelectors.getData(state, 'user.alerts.counter', 0),
+    };
+  }
+
+  return mapStateToProps;
+};
+```
+
+Same as above.
+
+
+##### Listening to multiple locations
+
+Now, there is a problem with these selectors, while they may provide you with convenience, the whole point of selectors is to select just the data that changes so you don't end up render thrashing. Because of the structure of these selectors, they can lead to bad performance if missused. In general, it is better to overselect data (i.e. select staticData instead of staticData.one and staticData.two, even i there is staticData.three in the state) or use multiple selectors on the same component that have good re-use and caching than to use these.
+
+What this is useful for is assigning data to specific keys, all from the same data structure, like `current, previous, next` in a news article app, for instance.
 
 
 
@@ -174,25 +232,31 @@ You can specify your own actions and reducers by passing in the apropriate reduc
 
 #### Selectors
 
-You can build your own selectors anywhere, and just include them - react-redux-with-networking-helper uses immer to build it's selectors, but you can use anything.
+You can build your own selectors anywhere, and just include them - react-redux-with-networking-helper uses reselect to build it's selectors, but you can use anything.
 
 #### Sagas
+
+TODO
+
+#### Internal structure and how it all slots together (for contributors?)
 
 TODO
 
 
 ## TODO
 
+ * Finish the documentation / make some example apps / refactor it
  * Provide additional / custom sagas to the initialisation of the library
  * Support all network methods (PATCH/GET/POST only right now)
  * Pass back headers to the various request lifecycle hooks
  * Test on dom react (non react-native) project / environment
  * Propper dev setup / linting etc.
- * Finish the documentation / make some example apps
  * TODO convenience method for selector creation so you don't have to reference immer directly
  * Probably loads of other stuff ;-)
  * Removal / invalidation of global headers?
  * Some kind of debugging switch for selectors etc. to see performance 
  * a way to select between shalow and deep equity checking
+ * Cleanup the locationStore variable in the referenceData selector
+ * A flag to toggle the redux logging middleware
 
 
