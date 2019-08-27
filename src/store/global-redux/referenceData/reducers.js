@@ -69,30 +69,22 @@ export const globalReferenceDataReducer = createReducer(initialState, {
   GLOBAL_REFERENCE_DATA_CONCAT_FIRST_DATA: (state, action) => produce(state, (draft) => {
     const { ref, location } = getDraftRef(action, draft);
 
-    if (action.keys !== null) {
-      throw new Error('Can not concat with key extractor');
-    } else {
-      let useData = action.data;
+    let useData = action.data;
 
-      if (!Array.isArray(action.data)) {
-        useData = [action.data];
-      }
-
-      ref[location] = useData.concat(ref[location]);
+    if (!Array.isArray(action.data)) {
+      useData = [action.data];
     }
+
+    ref[location] = useData.concat(ref[location]);
   }),
   GLOBAL_REFERENCE_DATA_CONCAT_LAST_DATA: (state, action) => produce(state, (draft) => {
     const { ref, location } = getDraftRef(action, draft);
 
-    if (action.keys !== null) {
-      throw new Error('Can not concat with key extractor');
-    } else {
-      if (!Array.isArray(ref[location])) {
-        ref[location] = [];
-      }
-
-      ref[location] = ref[location].concat(action.data);
+    if (!Array.isArray(ref[location])) {
+      ref[location] = [];
     }
+
+    ref[location] = ref[location].concat(action.data);
   }),
   GLOBAL_REFERENCE_DATA_UNSET_DATA: (state, action) => produce(state, (draft) => {
     const { ref, location } = getDraftRef(action, draft);

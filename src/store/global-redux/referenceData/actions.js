@@ -17,7 +17,7 @@ export function mergeData(location, data, keys = null) {
   };
 }
 
-export function concatFirstData(location, data, keys = null) {
+export function concatFirstData(location, data) {
   return {
     type: 'GLOBAL_REFERENCE_DATA_CONCAT_FIRST_DATA',
     location,
@@ -26,7 +26,7 @@ export function concatFirstData(location, data, keys = null) {
   };
 }
 
-export function concatLastData(location, data, keys = null) {
+export function concatLastData(location, data) {
   return {
     type: 'GLOBAL_REFERENCE_DATA_CONCAT_LAST_DATA',
     location,
