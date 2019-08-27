@@ -179,7 +179,7 @@ setData(location, data);
 <details><summary>DataActions.unsetData(location)</summary>
 <p>
 
-Removes data at a specific location from the state.
+⋅⋅⋅Removes data at a specific location from the state.
 
 </p>
 </details>
