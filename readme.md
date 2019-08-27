@@ -83,23 +83,42 @@ There are two different API's - the Data API and the Network API. There is no li
 
 ##### Modifying the data
 
-* `DataActions.setData(location, data, keys = null)`
+
+<details><summary>DataActions.setData(location, data, keys = null)</summary>
+<p>
 
 Overrides any element at the current location with the data specified. See keys note below for description.
 
-* `DataActions.mergeData(location, data, keys = null)`
+</p>
+</details>
+
+<details><summary>DataActions.mergeData(location, data, keys = null)</summary>
+<p>
 
 Uses `Object.assign({}, currentStateAtLocation, data)` to mutate the state
 
-* `DataActions.concatFirstData(location, data)`
+</p>
+</details>
+
+<details><summary>DataActions.concatFirstData(location, data)</summary>
+<p>
 
 Uses `locationState = data.concat(currentStateAtLocation);` to add the existing state (assuming it is an array) to the end of the data you are inserting, if the `data` value is not an array it will be converted to an array prior to concatenation.
 
-* `DataActions.concatLastData(location, data)`
+</p>
+</details>
+
+<details><summary>DataActions.concatLastData(location, data)</summary>
+<p>
 
 Uses `locationState = currentStateAtLocation.concat(data);` to add your data to the end of the array at the location, if the data at the location is not an array, it will be overwritten with a blank array.
 
-**The keys parameter**
+</p>
+</details>
+
+
+<details><summary>The keys parameter</summary>
+<p>
 
 The `keys` parameter is useful for putting array data with some unique ID into the global state so it can be referenced - the keyExtractor parameter in network requests is used to generate the `keys` array.
 
@@ -148,6 +167,11 @@ setData(location, data);
   }
 }
 ```
+
+</p>
+</details>
+
+
 
 
 ##### Removing data
