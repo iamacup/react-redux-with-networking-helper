@@ -401,17 +401,32 @@ TODO
 
 This library provides a bunch of actions, reducers, selectors and sagas to perform the pre-canned set of tasks it was designed for, that is not to say that it is limited to just those things, you can plug your stuff into the underlying store easily
 
-#### Actions and Reducers
+<details><summary>Actions and Reducers</summary>
+<p>
 
 You can specify your own actions and reducers by passing in the apropriate reducers to the `additionalReducers` prop on the `ReduxWrapper` component. Once you have specified them, you can call dispatch whatever actions they respond to from any connected component.
 
-#### Selectors
+</p>
+</details>
+
+
+<details><summary>Selectors</summary>
+<p>
 
 You can build your own selectors anywhere, and just include them - react-redux-with-networking-helper uses reselect to build it's selectors, but you can use anything.
 
-#### Sagas
+</p>
+</details>
+
+
+<details><summary>Sagas</summary>
+<p>
 
 TODO
+
+</p>
+</details>
+
 
 #### Internal structure and how it all slots together (for contributors?)
 
