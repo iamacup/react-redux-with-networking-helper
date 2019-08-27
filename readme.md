@@ -79,7 +79,7 @@ There are two different API's - the Data API and the Network API. There is no li
 
 ### The Data API
 
-#### Actions
+#### Actions (DataActions)
 
 ##### Modifying the data
 
@@ -160,7 +160,7 @@ Removes data at a specific location from the state.
 
 Restores the state back to how it was when initialised. Useful for logout type events.
 
-#### Selectors
+#### Selectors (DataSelectors)
 
 Bear in mind that under the hood we are using [Reselect](https://github.com/reduxjs/reselect) for our selectors, there are, therefore, two types of every selector - you can read about this in detail in the [reselect documentation here](https://github.com/reduxjs/reselect) - but the cheatsheet version is - if you only have **one instance** of a component you can use the `get***` function, if you will have multiple instances of a component you need to use the equivelant `makeGet***` function to build your selectors. To be on the safe side, use the `makeGet***` - it only adds 1 additional line of code.
 
@@ -168,7 +168,7 @@ Bear in mind that under the hood we are using [Reselect](https://github.com/redu
 
 With all of the above stuff in mind about selectors, remember that `makeGet***` will return a function to select on and so the value passed to a `makeGet***` function does *NOT* perform the same function as the location value that is passed to the returned function.
 
-* `makeGetData(cacheName = null)`
+* `DataSelectors.makeGetData(cacheName = null)`
 
 returns a function with the signature
 
@@ -194,7 +194,11 @@ const makeMapStateToProps = () => {
 
 Which will return the data in user.alerts.counter, or 0 if it does not exist.
 
-* `getData()`
+
+
+
+<details><summary>`DataSelectors.getData()`</summary>
+<p>
 
 ```
 const makeMapStateToProps = () => {
@@ -208,7 +212,25 @@ const makeMapStateToProps = () => {
 };
 ```
 
-Same as above.
+</p>
+</details>
+
+
+* `DataSelectors.getData()`
+
+```
+const makeMapStateToProps = () => {
+  function mapStateToProps(state) {
+    return {
+      _alertsCounter: DataSelectors.getData(state, 'user.alerts.counter', 0),
+    };
+  }
+
+  return mapStateToProps;
+};
+```
+
+Which will return the data in user.alerts.counter, or 0 if it does not exist.
 
 
 ##### Listening to multiple locations
@@ -216,6 +238,7 @@ Same as above.
 Now, there is a problem with these selectors, while they may provide you with convenience, the whole point of selectors is to select just the data that changes so you don't end up render thrashing. Because of the structure of these selectors, they can lead to bad performance if missused. In general, it is better to overselect data (i.e. select staticData instead of staticData.one and staticData.two, even i there is staticData.three in the state) or use multiple selectors on the same component that have good re-use and caching than to use these.
 
 What this is useful for is assigning data to specific keys, all from the same data structure, like `current, previous, next` in a news article app, for instance.
+
 
 
 
