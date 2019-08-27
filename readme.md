@@ -168,7 +168,9 @@ Bear in mind that under the hood we are using [Reselect](https://github.com/redu
 
 With all of the above stuff in mind about selectors, remember that `makeGet***` will return a function to select on and so the value passed to a `makeGet***` function does *NOT* perform the same function as the location value that is passed to the returned function.
 
-* `DataSelectors.makeGetData(cacheName = null)`
+
+<details><summary>DataSelectors.makeGetData(cacheName = null)</summary>
+<p>
 
 returns a function with the signature
 
@@ -195,9 +197,12 @@ const makeMapStateToProps = () => {
 Which will return the data in user.alerts.counter, or 0 if it does not exist.
 
 
+</p>
+</details>
 
 
-<details><summary>`DataSelectors.getData()`</summary>
+
+<details><summary>DataSelectors.getData()</summary>
 <p>
 
 ```
@@ -215,20 +220,6 @@ const makeMapStateToProps = () => {
 </p>
 </details>
 
-
-* `DataSelectors.getData()`
-
-```
-const makeMapStateToProps = () => {
-  function mapStateToProps(state) {
-    return {
-      _alertsCounter: DataSelectors.getData(state, 'user.alerts.counter', 0),
-    };
-  }
-
-  return mapStateToProps;
-};
-```
 
 Which will return the data in user.alerts.counter, or 0 if it does not exist.
 
