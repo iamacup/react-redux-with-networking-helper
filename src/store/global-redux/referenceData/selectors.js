@@ -37,22 +37,15 @@ const targetReferenceData = (state, inputLocation, emptyReturnValue = {}) => {
   return emptyReturnValue;
 };
 
-const targetReferenceDataMulti = (state, inputLocation) => {
+const targetReferenceDataMulti = (state, inputLocations) => {
   const res = {};
 
-  for (const item of inputLocation) {
-    res[item.name] = targetReferenceData(state, item.location);
+  for (const item of inputLocations) {
+    res[item.name] = targetReferenceData(state, item.location, item.emptyReturnValue);
   }
 
   return res;
 };
-
-/*
-      _referenceData: getDataMulti(state, [
-        { name: 'leagues', location: ['static', 'legacy', 'leagues'] },
-        { name: 'discoveryMethods', location: ['static', 'onboarding', 'discovery-methods'] },
-      ]),
-*/
 export const makeGetDataMulti = () => createDeepEqualitySelector(
   [
     targetReferenceDataMulti,

@@ -179,7 +179,7 @@ setData(location, data);
 <details><summary>DataActions.unsetData(location)</summary>
 <p>
 
-⋅⋅⋅Removes data at a specific location from the state.
+Removes data at a specific location from the state.
 
 </p>
 </details>
@@ -230,6 +230,11 @@ const makeMapStateToProps = () => {
 
 Which will return the data in user.alerts.counter, or 0 if it does not exist.
 
+It will appear on the component like this:
+
+```
+console.log(this.props.alertsCounter); // reads 0 if not defined, something else if it is 
+```
 
 </p>
 </details>
@@ -243,7 +248,7 @@ Which will return the data in user.alerts.counter, or 0 if it does not exist.
 const makeMapStateToProps = () => {
   function mapStateToProps(state) {
     return {
-      _alertsCounter: DataSelectors.getData(state, 'user.alerts.counter', 0),
+      alertsCounter: DataSelectors.getData(state, 'user.alerts.counter', 0),
     };
   }
 
@@ -251,11 +256,17 @@ const makeMapStateToProps = () => {
 };
 ```
 
+Which will return the data in user.alerts.counter, or 0 if it does not exist.
+
+It will appear on the component like this:
+
+```
+console.log(this.props.alertsCounter); // reads 0 if not defined, something else if it is 
+```
+
 </p>
 </details>
 
-
-Which will return the data in user.alerts.counter, or 0 if it does not exist.
 
 
 ##### Listening to multiple locations
@@ -265,10 +276,126 @@ Now, there is a problem with these selectors, while they may provide you with co
 What this is useful for is assigning data to specific keys, all from the same data structure, like `current, previous, next` in a news article app, for instance.
 
 
+<details><summary>DataSelectors.makeGetDataMulti()</summary>
+<p>
+
+returns a function with the signature
+
+* `(state, inputLocations)`
+
+where inputLocations is an array of object like this:
+
+```
+{
+  name: <string> // the name the connected component will reference this value by
+  location: <string> // the location to pull data from
+  emptyReturnValue: <any> // optional return value if not found, defaults to empty object {}
+}
+```
+
+eg:
+
+```
+[
+  { name: 'appState', location: 'app.state' },
+  { name: 'userAlertsCounter', location: 'user.alerts.counter', emptyReturnValue: 0},
+  ...
+]
+```
+
+This returns a function that can be used to select data like this:
+
+```
+const makeMapStateToProps = () => {
+  const getDataMulti = DataSelectors.makeGetDataMullti();
+
+  function mapStateToProps(state) {
+    return {
+      globalData: getDataMulti(state, [
+        { name: 'appState', location: 'app.state' },
+        { name: 'userAlertsCounter', location: 'user.alerts.counter', emptyReturnValue: 0},
+      ]),
+    };
+  }
+
+  return mapStateToProps;
+};
+```
+
+Which will return the data both the app.state location and the user.alerts.counter location
+
+It will appear on the component like this:
+
+```
+console.log(this.props.globalData.appState); // contains the value in app.state or {} if undefined
+console.log(this.props.globalData.userAlertsCounter); // contains teh value in user.alerts.counter or 0 if undefined
+```
+
+
+</p>
+</details>
+
+<details><summary>DataSelectors.getDataMulti()</summary>
+<p>
+
+returns a function with the signature
+
+* `(state, inputLocations)`
+
+where inputLocations is an array of object like this:
+
+```
+{
+  name: <string> // the name the connected component will reference this value by
+  location: <string> // the location to pull data from
+  emptyReturnValue: <any> // optional return value if not found, defaults to empty object {}
+}
+```
+
+eg:
+
+```
+[
+  { name: 'appState', location: 'app.state' },
+  { name: 'userAlertsCounter', location: 'user.alerts.counter', emptyReturnValue: 0},
+  ...
+]
+```
+
+This returns a function that can be used to select data like this:
+
+```
+const makeMapStateToProps = () => {
+  function mapStateToProps(state) {
+    return {
+      globalData: DataSelectors.getDataMulti(state, [
+        { name: 'appState', location: 'app.state' },
+        { name: 'userAlertsCounter', location: 'user.alerts.counter', emptyReturnValue: 0},
+      ]),
+    };
+  }
+
+  return mapStateToProps;
+};
+```
+
+Which will return the data both the app.state location and the user.alerts.counter location
+
+It will appear on the component like this:
+
+```
+console.log(this.props.globalData.appState); // contains the value in app.state or {} if undefined
+console.log(this.props.globalData.userAlertsCounter); // contains teh value in user.alerts.counter or 0 if undefined
+```
+
+
+</p>
+</details>
 
 
 ### The Network API
 
+TODO
 
 ## Custom Actions, Reducers, Selectors and Sagas
 
