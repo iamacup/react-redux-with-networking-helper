@@ -176,13 +176,23 @@ setData(location, data);
 
 ##### Removing data
 
-* `DataActions.unsetData(location)`
+<details><summary>DataActions.unsetData(location)</summary>
+<p>
 
 Removes data at a specific location from the state.
 
-* `DataActions.clearAllData()`
+</p>
+</details>
+
+
+<details><summary>DataActions.clearAllData()</summary>
+<p>
 
 Restores the state back to how it was when initialised. Useful for logout type events.
+
+</p>
+</details>
+
 
 #### Selectors (DataSelectors)
 
