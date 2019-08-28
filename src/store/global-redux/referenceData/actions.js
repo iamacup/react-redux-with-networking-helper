@@ -22,7 +22,6 @@ export function concatFirstData(location, data) {
     type: 'GLOBAL_REFERENCE_DATA_CONCAT_FIRST_DATA',
     location,
     data,
-    keys,
   };
 }
 
@@ -31,7 +30,6 @@ export function concatLastData(location, data) {
     type: 'GLOBAL_REFERENCE_DATA_CONCAT_LAST_DATA',
     location,
     data,
-    keys,
   };
 }
 
@@ -39,6 +37,14 @@ export function unsetData(location) {
   return {
     type: 'GLOBAL_REFERENCE_DATA_UNSET_DATA',
     location,
+  };
+}
+
+export function unsetKeysAtLocation(location, keys) {
+  return {
+    type: 'GLOBAL_REFERENCE_DATA_UNSET_KEYS_AT_LOCATION',
+    location,
+    keys,
   };
 }
 

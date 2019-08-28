@@ -91,5 +91,12 @@ export const globalReferenceDataReducer = createReducer(initialState, {
 
     delete ref[location];
   }),
+  GLOBAL_REFERENCE_DATA_UNSET_KEYS_AT_LOCATION: (state, action) => produce(state, (draft) => {
+    const { ref, location } = getDraftRef(action, draft);
+
+    for (const key of action.keys) {
+      delete ref[location][key];
+    }
+  }),
   GLOBAL_REFERENCE_DATA_CLEAR_ALL_DATA: (state, action) => initialState,
 });

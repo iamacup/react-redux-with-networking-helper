@@ -26,13 +26,13 @@ The whole point of this library is to have a single source of data truth - the '
 
 This 'global state' is then updated, either directly through actions on components - i.e. when you need to update the user's current handle - or indirectly through network data - i.e. when you just logged in and need to update the current users object.
 
-There are some subtleties and complexities about this library, i think it is best to use the examples and then delve into the API documentation to understand why things are as they are, rather than the other way around :)
+There are some subtleties and complexities about this library, i think it is best to use the examples and then jump into the API documentation to understand why things are as they are, rather than the other way around :)
 
 ## Getting Started
 
 First, install the package
 
-`yarn install react-redux-with-networking-helper`
+`yarn add react-redux-with-networking-helper`
 
 Then you need to wrap your upper most component (usually the one registered with `AppRegistry.registerComponent`) like this:
 
@@ -193,6 +193,18 @@ Removes data at a specific location from the state.
 </details>
 
 
+<details><summary>DataActions.unsetKeysAtLocation(location, keys)</summary>
+<p>
+
+`DataActions.unsetKeysAtLocation(location, keys)`
+
+Removes any keys in the keys array at the location.
+
+</p>
+</details>
+
+
+
 <details><summary>DataActions.clearAllData()</summary>
 <p>
 
@@ -206,7 +218,7 @@ Restores the state back to how it was when initialised. Useful for logout type e
 
 #### Selectors (DataSelectors)
 
-Bear in mind that under the hood we are using [Reselect](https://github.com/reduxjs/reselect) for our selectors, there are, therefore, two types of every selector - you can read about this in detail in the [reselect documentation here](https://github.com/reduxjs/reselect) - but the cheatsheet version is - if you only have **one instance** of a component you can use the `get***` function, if you will have multiple instances of a component you need to use the equivelant `makeGet***` function to build your selectors. To be on the safe side, use the `makeGet***` - it only adds 1 additional line of code.
+Bear in mind that under the hood we are using [Reselect](https://github.com/reduxjs/reselect) for our selectors, there are, therefore, two types of every selector - you can read about this in detail in the [reselect documentation here](https://github.com/reduxjs/reselect) - but the cheatsheet version is - if you only have **one instance** of a component you can use the `get***` function, if you will have **multiple instances** of a component you need to use the equivelant `makeGet***` function to build your selectors. To be on the safe side, use the `makeGet***` - it only adds 1 additional line of code.
 
 ##### Listening to one location
 
@@ -354,6 +366,8 @@ console.log(this.props.globalData.userAlertsCounter); // contains teh value in u
 <details><summary>DataSelectors.getDataMulti()</summary>
 <p>
 
+`DataSelectors.getDataMulti()`
+
 returns a function with the signature
 
 * `(state, inputLocations)`
@@ -464,5 +478,7 @@ TODO
  * a way to select between shalow and deep equity checking
  * Cleanup the locationStore variable in the referenceData selector
  * A flag to toggle the redux logging middleware
+ * stateUpdatedKeys - is it used?
+ * Update the dependencies - don't need strict version numbers on stuff like prop-types etc.
 
 
