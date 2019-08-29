@@ -15,6 +15,7 @@ class ReduxServiceMainContainer extends Component {
 
 const makeMapStateToProps = () => {
   const getGlobalErrorFormatter = NetworkSelectors.makeGetGlobalErrorFormatter();
+  const getGlobalResponseIntercept = NetworkSelectors.makeGetGlobalResponseIntercept();
   const getNetworkExceptionCallback = NetworkSelectors.makeGetNetworkExceptionCallback();
   const getNetworkConnectivityState = NetworkSelectors.makeGetNetworkConnectivityState();
   const getNetworkTimeouts = NetworkSelectors.makeGetNetworkTimeouts();
@@ -24,6 +25,7 @@ const makeMapStateToProps = () => {
   function mapStateToProps(state) {
     return {
       _globalErrorFormatter: getGlobalErrorFormatter(state),
+      _globalResponseIntercept: getGlobalResponseIntercept(state),
       _networkExceptionCallback: getNetworkExceptionCallback(state),
       _networkConnectivityState: getNetworkConnectivityState(state),
       _timeouts: getNetworkTimeouts(state),
