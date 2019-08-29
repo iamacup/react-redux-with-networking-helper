@@ -27,16 +27,16 @@ const defaultGetOptions = {
   multiIdentifier: null,
 
   // a function that is called with any 200 <> 299 status code, can return an array of objects to be dumped into the responseTarget - the keyExtractor will be called to distribute them properly, if this does not return an array, it will not call the key extractor at all and just dump onto the location, if the key extractor is null, the response will just be dumped onto the location - existing data is NULL if no responseTarget specified, or is the current data in the store ({} if no data) at that target
-  // successFormatHandler: (data, statusCode, existingData) => data,
+  // successFormatHandler: (data, statusCode, existingData, responseHeaders) => data,
   successFormatHandler: null,
   // a function that is called with any other status code not captured by the success handler, whatever is returned by this function is returned as the data attribute when there is an error, note it is possible for this function to recieve an exception (Error) type as well as an actual response, the statusCode will be -1 if this is the case with the error as the third argument, and the error.toString() value as the data
-  errorFormatHandler: null, // (data, statusCode, err) => { return data; },
+  errorFormatHandler: null, // (data, statusCode, err, responseHeaders) => { return data; },
   // a function that is called with any 200 <> 299 status code after the sucessFormatHandler in case you need to do any side effects as a result of a success condition
-  successCallback: null, // (/*formattedData, originalData, statusCode*/) => {},
+  successCallback: null, // (/*formattedData, originalData, statusCode, responseHeaders*/) => {},
   // called when there is an error
-  errorCallback: null, // (/*formattedData, originalData, statusCode*/) => {},
+  errorCallback: null, // (/*formattedData, originalData, statusCode, responseHeaders*/) => {},
   // this function is called right before prior to successFormatHandler and the insert action for response target which can be used to remove / clean up old state changes
-  preDataInsertCleanupHandler: null, // (existingData, modifiedKeys, networkState) => {}
+  preDataInsertCleanupHandler: null, // (existingData, modifiedKeys, networkState, responseHeaders) => {}
 
   // this is called for every element returned by the successFormatHandler and should return a key that will be used to allocate the data to the responseTarget.[key] location. if it is null then it will not be used and the data will be just dumped onto the object, this will not be called if the data returned from successFormatHAndler is not an array
   keyExtractor: /* (item, index) => {}, */ null,

@@ -208,6 +208,13 @@ export const getGlobalErrorFormatter = createDeepEqualitySelector(
   data => data,
 );
 
+export const getGlobalResponseIntercept = createDeepEqualitySelector(
+  [
+    state => state.globalNetworkReducer._globalResponseIntercept,
+  ],
+  data => data,
+);
+
 export const getNetworkExceptionCallback = createDeepEqualitySelector(
   [
     state => state.globalNetworkReducer._networkExceptionCallback,
@@ -234,6 +241,13 @@ export const getNetworkTimeouts = createDeepEqualitySelector(
 export const makeGetGlobalErrorFormatter = () => createDeepEqualitySelector(
   [
     getGlobalErrorFormatter,
+  ],
+  data => data,
+);
+
+export const makeGetGlobalResponseIntercept = () => createDeepEqualitySelector(
+  [
+    getGlobalResponseIntercept,
   ],
   data => data,
 );

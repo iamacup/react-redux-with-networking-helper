@@ -39,6 +39,7 @@ function mapDispatchToProps(dispatch) {
   return {
     $expireNetworkConnection: internalID => dispatch(NetworkActions.expireNetworkConnection(internalID)),
     $setGlobalErrorFormatter: handler => dispatch(NetworkActions.addInternalReferenceData('_globalErrorFormatter', handler)),
+    $setGlobalResponseIntercept: handler => dispatch(NetworkActions.addInternalReferenceData('_globalResponseIntercept', handler)),
     $setNetworkExceptionCallback: handler => dispatch(NetworkActions.addInternalReferenceData('_networkExceptionCallback', handler)),
     $runNetworkTestAction: (networkTestAction) => {
       networkTestAction.config.identifier = '_networkTest'; // eslint-disable-line no-param-reassign

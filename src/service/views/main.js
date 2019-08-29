@@ -11,6 +11,7 @@ let timeoutRef = null;
 class ReduxServiceMainView extends Component {
   componentDidMount() {
     this.props.$setGlobalErrorFormatter(this.props.globalErrorFormatter);
+    this.props.$setGlobalResponseIntercept(this.props.globalResponseIntercept);
     this.props.$setNetworkExceptionCallback(this.props.networkExceptionCallback);
 
     this.checkExpired();
@@ -20,6 +21,10 @@ class ReduxServiceMainView extends Component {
     // work out if the state was cleared in some way and re-introduce the bits we need
     if (this.props._globalErrorFormatter === null && prevProps._globalErrorFormatter !== null) {
       this.props.$setGlobalErrorFormatter(this.props.globalErrorFormatter);
+    }
+
+    if (this.props._globalResponseIntercept === null && prevProps._globalResponseIntercept !== null) {
+      this.props.setGlobalResponseIntercept(this.props.globalResponseIntercept);
     }
 
     if (this.props._networkExceptionCallback === null && prevProps._networkExceptionCallback !== null) {
@@ -76,6 +81,7 @@ class ReduxServiceMainView extends Component {
 ReduxServiceMainView.defaultProps = {
   _globalErrorFormatter: null,
   _networkExceptionCallback: null,
+  _globalResponseIntercept: null,
 };
 
 ReduxServiceMainView.propTypes = {
@@ -83,12 +89,15 @@ ReduxServiceMainView.propTypes = {
   networkExceptionCallback: PropTypes.func.isRequired,
   networkTestAction: PropTypes.object.isRequired,
   networkTestDelay: PropTypes.number.isRequired,
+  globalResponseIntercept: PropTypes.func.isRequired,
 
   $setGlobalErrorFormatter: PropTypes.func.isRequired,
+  $setGlobalResponseIntercept: PropTypes.func.isRequired,
   $setNetworkExceptionCallback: PropTypes.func.isRequired,
   $expireNetworkConnection: PropTypes.func.isRequired,
 
   _globalErrorFormatter: PropTypes.any,
+  _globalResponseIntercept: PropTypes.any,
   _networkExceptionCallback: PropTypes.any,
   _networkData: PropTypes.object.isRequired,
 };

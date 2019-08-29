@@ -43,12 +43,12 @@ export default class REDUX extends Component {
           persistor={this.persistor}
         >
           <ReduxService
+            globalResponseIntercept={this.props.globalResponseIntercept}
             globalErrorFormatter={this.props.globalErrorFormatter}
             networkExceptionCallback={this.props.networkExceptionCallback}
             networkTestAction={this.props.networkTestAction}
             networkTestDelay={this.props.networkTestDelay}
           />
-
           {this.props.children}
         </PersistGate>
       </Provider>
@@ -61,6 +61,7 @@ REDUX.defaultProps = {
   setDebugWithCurlirize: false,
   additionalReducers: [],
   globalErrorFormatter: data => data,
+  globalResponseIntercept: () => {},
   networkTestAction: {},
   networkTestDelay: 10000,
 };
@@ -70,6 +71,7 @@ REDUX.propTypes = {
   setDebugWithCurlirize: PropTypes.bool,
   additionalReducers: PropTypes.array,
   globalErrorFormatter: PropTypes.func,
+  globalResponseIntercept: PropTypes.func,
   children: PropTypes.any.isRequired,
   networkTestAction: PropTypes.object,
   networkTestDelay: PropTypes.number,

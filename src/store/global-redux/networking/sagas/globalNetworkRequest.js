@@ -10,7 +10,7 @@ import * as globalNetworkingActions from '../actions';
 import * as globalReferenceDataActions from '../../referenceData/actions';
 
 import {
-  getGlobalHeaders, getGlobalErrorFormatter, getNetworkExceptionCallback, getNetworkConnectivityState, getNetworkData, getNetworkDataMulti,
+  getGlobalHeaders, getGlobalResponseIntercept, getGlobalErrorFormatter, getNetworkExceptionCallback, getNetworkConnectivityState, getNetworkData, getNetworkDataMulti,
 } from '../selectors';
 import { getData } from '../../referenceData/selectors';
 
@@ -25,6 +25,7 @@ export default function* performNetworkRequest(action) {
   // load up some stuff from the global state
   const globalHeaders = yield select(getGlobalHeaders);
   const globalErrorFormatter = yield select(getGlobalErrorFormatter);
+  const globalResponseIntercept = yield select(getGlobalResponseIntercept);
   const networkExceptionHandler = yield select(getNetworkExceptionCallback);
   const connectivityState = yield select(getNetworkConnectivityState);
 
@@ -75,7 +76,7 @@ export default function* performNetworkRequest(action) {
           existingData = yield select(getData, action.config.responseTarget);
         }
 
-        insertData = yield call(action.config.successFormatHandler, response.data, response.status, existingData);
+        insertData = yield call(action.config.successFormatHandler, response.data, response.status, existingData, response.headers);
       }
 
       // we work out the keys we are going to update / set
@@ -96,7 +97,7 @@ export default function* performNetworkRequest(action) {
       if (action.config.preDataInsertCleanupHandler !== null) {
         const existingData = yield select(getData, action.config.responseTarget);
 
-        yield call(action.config.preDataInsertCleanupHandler, existingData, stateUpdatedKeys, currentResponseState.state);
+        yield call(action.config.preDataInsertCleanupHandler, existingData, stateUpdatedKeys, currentResponseState.state, response.headers);
       }
 
       // drop the response onto the state if we need to
@@ -114,8 +115,17 @@ export default function* performNetworkRequest(action) {
 
       // run the success callback
       if (action.config.successCallback !== null) {
-        yield call(action.config.successCallback, insertData, response.data, response.status);
+        yield call(action.config.successCallback, insertData, response.data, response.status, response.headers);
       }
+
+      // global intercept
+      yield call(globalResponseIntercept, {
+        type: 'success',
+        insertData,
+        responseData: response.data,
+        responseStatus: response.status,
+        responseHeaders: response.headers,
+      });
 
       // drop the success onto the network state if needed
       let dataToState = {};
@@ -133,13 +143,22 @@ export default function* performNetworkRequest(action) {
       let dataToState = globalErrorFormatterOutput;
 
       if (action.config.errorFormatHandler !== null) {
-        dataToState = yield call(action.config.errorFormatHandler, globalErrorFormatterOutput, response.status);
+        dataToState = yield call(action.config.errorFormatHandler, globalErrorFormatterOutput, response.status, response.headers);
       }
 
       // check to see if we have an error callback
       if (action.config.errorCallback !== null) {
-        yield call(action.config.errorCallback, dataToState, response.data, response.status);
+        yield call(action.config.errorCallback, dataToState, response.data, response.status, response.headers);
       }
+
+      // global intercept
+      yield call(globalResponseIntercept, {
+        type: 'error',
+        insertData: dataToState,
+        responseData: response.data,
+        responseStatus: response.status,
+        responseHeaders: response.headers,
+      });
 
       // finish
       yield put(globalNetworkingActions.networkResponse(action.internalID, STATES.ERROR, dataToState, response.status));
@@ -160,13 +179,22 @@ export default function* performNetworkRequest(action) {
       let dataToState = err.toString();
 
       if (action.config.errorFormatHandler !== null) {
-        dataToState = yield call(action.config.errorFormatHandler, err.toString(), exceptionStatusCode, err);
+        dataToState = yield call(action.config.errorFormatHandler, err.toString(), exceptionStatusCode, err, {});
       }
 
       // check to see if we have an error callback
       if (action.config.errorCallback !== null) {
-        yield call(action.config.errorCallback, dataToState, err, exceptionStatusCode, action);
+        yield call(action.config.errorCallback, dataToState, err, exceptionStatusCode, {});
       }
+
+      // global intercept
+      yield call(globalResponseIntercept, {
+        type: 'error',
+        insertData: dataToState,
+        responseData: err,
+        responseStatus: exceptionStatusCode,
+        responseHeaders: {},
+      });
 
       // finish
       yield put(globalNetworkingActions.networkResponse(action.internalID, STATES.ERROR, dataToState, exceptionStatusCode));
@@ -187,13 +215,22 @@ export default function* performNetworkRequest(action) {
       let dataToState = globalErrorFormatterOutput;
 
       if (action.config.errorFormatHandler !== null) {
-        dataToState = yield call(action.config.errorFormatHandler, globalErrorFormatterOutput, err.response.status);
+        dataToState = yield call(action.config.errorFormatHandler, globalErrorFormatterOutput, err.response.status, err.response.headers);
       }
 
       // check to see if we have an error callback
       if (action.config.errorCallback !== null) {
-        yield call(action.config.errorCallback, dataToState, err.response.data, err.response.status);
+        yield call(action.config.errorCallback, dataToState, err.response.data, err.response.status, err.response.headers);
       }
+
+      // global intercept
+      yield call(globalResponseIntercept, {
+        type: 'error',
+        insertData: dataToState,
+        responseData: err.response.data,
+        responseStatus: err.response.status,
+        responseHeaders: err.response.headers,
+      });
 
       // finish
       yield put(globalNetworkingActions.networkResponse(action.internalID, STATES.ERROR, dataToState, err.response.status));
