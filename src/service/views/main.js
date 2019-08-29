@@ -24,7 +24,7 @@ class ReduxServiceMainView extends Component {
     }
 
     if (this.props._globalResponseIntercept === null && prevProps._globalResponseIntercept !== null) {
-      this.props.setGlobalResponseIntercept(this.props.globalResponseIntercept);
+      this.props.$setGlobalResponseIntercept(this.props.globalResponseIntercept);
     }
 
     if (this.props._networkExceptionCallback === null && prevProps._networkExceptionCallback !== null) {
