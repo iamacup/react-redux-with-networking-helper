@@ -123,7 +123,7 @@ export default function* performNetworkRequest(action) {
         type: 'success',
         insertData,
         responseData: response.data,
-        responseStatus: response.status,
+        responseStatusCode: response.status,
         responseHeaders: response.headers,
       });
 
@@ -156,7 +156,7 @@ export default function* performNetworkRequest(action) {
         type: 'error',
         insertData: dataToState,
         responseData: response.data,
-        responseStatus: response.status,
+        responseStatusCode: response.status,
         responseHeaders: response.headers,
       });
 
@@ -192,7 +192,7 @@ export default function* performNetworkRequest(action) {
         type: 'error',
         insertData: dataToState,
         responseData: err,
-        responseStatus: exceptionStatusCode,
+        responseStatusCode: exceptionStatusCode,
         responseHeaders: {},
       });
 
@@ -228,7 +228,7 @@ export default function* performNetworkRequest(action) {
         type: 'error',
         insertData: dataToState,
         responseData: err.response.data,
-        responseStatus: err.response.status,
+        responseStatusCode: err.response.status,
         responseHeaders: err.response.headers,
       });
 

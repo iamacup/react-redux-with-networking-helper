@@ -192,7 +192,9 @@ export const getNetworkDataMulti = createDeepEqualitySelector(
 );
 
 
-// get's the current global headers (does not have its own memory)
+
+
+
 export const getGlobalHeaders = createDeepEqualitySelector(
   [
     state => state.globalNetworkReducer._globalHeaders,
@@ -200,7 +202,6 @@ export const getGlobalHeaders = createDeepEqualitySelector(
   data => data,
 );
 
-// these are called inside of the network request thing so don't need their own cache
 export const getGlobalErrorFormatter = createDeepEqualitySelector(
   [
     state => state.globalNetworkReducer._globalErrorFormatter,
@@ -237,7 +238,15 @@ export const getNetworkTimeouts = createDeepEqualitySelector(
 );
 
 
-// these are called by the global service so do need their own cache
+
+
+export const makeGetGlobalHeaders = () => createDeepEqualitySelector(
+  [
+    getGlobalHeaders,
+  ],
+  data => data,
+);
+
 export const makeGetGlobalErrorFormatter = () => createDeepEqualitySelector(
   [
     getGlobalErrorFormatter,
