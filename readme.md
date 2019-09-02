@@ -10,6 +10,7 @@ This project was built for React Native, although it's dependencies should all w
 
 **Note:** This project is still in it's early stages and does have a TODO list, any feedback is welcome.
 
+
 ## Under the Hood
 
 Under the hood we use the following:
@@ -20,6 +21,7 @@ Under the hood we use the following:
  * **reselect** - to let us efficiently subscribe to state changes on components without causing re-renders
  * **immer** - for easy global state manipulation
 
+
 ## How To Think About It
 
 The whole point of this library is to have a single source of data truth - the 'global state' - this state can then be 'tuned in to' by various components using the connect method from react-redux in order to get updates. We have a bunch of selectors for selecting this data in a convenient way.
@@ -27,10 +29,6 @@ The whole point of this library is to have a single source of data truth - the '
 This 'global state' is then updated, either directly through actions on components - i.e. when you need to update the user's current handle - or indirectly through network data - i.e. when you just logged in and need to update the current users object.
 
 There are some subtleties and complexities about this library, i think it is best to use the examples and then jump into the API documentation to understand why things are as they are, rather than the other way around :)
-
-## Selectors - makeGet and get
-
-Bear in mind that under the hood we are using [Reselect](https://github.com/reduxjs/reselect) for our selectors, there are, therefore, two types of every selector - you can read about this in detail in the [reselect documentation here](https://github.com/reduxjs/reselect) - but the cheatsheet version is - if you only have **one instance** of a component you can use the `get***` function, if you will have **multiple instances** of a component you need to use the equivelant `makeGet***` function to build your selectors. To be on the safe side, use the `makeGet***` - it only adds 1 additional line of code.
 
 
 ## Getting Started
@@ -57,6 +55,7 @@ export default class Entrypoint extends Component {
 
 Then you are ready to go - you can connect up any components to the store and use any of the API's below, or create and use your own.
 
+
 ## Some Examples
 
 TODO
@@ -64,6 +63,7 @@ TODO
 * Simple data update
 * Simple network request
 * Paginated network request
+
 
 ## Locations
 
@@ -77,6 +77,14 @@ You can also include array indices like this
 
 * Whenever **putting data into the data store**, it will create all levels specified if they do not exist, as objects. 
 * Whenever **pulling data out of the data store**, traversal stops once a level is reached that does not exist and an empty object `{}` is returned or whatever was specified as the default value when creating the selector.
+
+
+## Selectors - makeGet and get
+
+Bear in mind that under the hood we are using [Reselect](https://github.com/reduxjs/reselect) for our selectors, there are, therefore, two types of every selector - you can read about this in detail in the [reselect documentation here](https://github.com/reduxjs/reselect#sharing-selectors-with-props-across-multiple-component-instances) - but the cheatsheet version is - if you only have **one instance** of a component you can use the `get***` function, if you will have **multiple instances** of a component you need to use the equivelant `makeGet***` function to build your selectors. To be on the safe side, use the `makeGet***` - it only adds 1 additional line of code.
+
+For some selectors we allow for caching, that caching is applied to the `makeGet***` functions so that instead of having multiple components with many functions that do the same thing, we have multiple components with a single function that does the same thing.
+
 
 ## API
 
@@ -223,12 +231,10 @@ Restores the state back to how it was when initialised. Useful for logout type e
 
 #### Selectors (DataSelectors)
 
+Remember that `makeGet***` will return a function to select on and so the value passed to a `makeGet***` function does *NOT* perform the same function as the location value that is passed to the returned function. [Read more here.](#Selectors---makeGet-and-get)
 
 
 ##### Listening to one location
-
-Remember that `makeGet***` will return a function to select on and so the value passed to a `makeGet***` function does *NOT* perform the same function as the location value that is passed to the returned function. [Read more here.](#Selectors---makeGet-and-get)
-
 
 <details><summary>DataSelectors.makeGetData(cacheName = null)</summary>
 <p>
