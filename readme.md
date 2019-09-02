@@ -28,6 +28,11 @@ This 'global state' is then updated, either directly through actions on componen
 
 There are some subtleties and complexities about this library, i think it is best to use the examples and then jump into the API documentation to understand why things are as they are, rather than the other way around :)
 
+## Selectors - makeGet and get
+
+Bear in mind that under the hood we are using [Reselect](https://github.com/reduxjs/reselect) for our selectors, there are, therefore, two types of every selector - you can read about this in detail in the [reselect documentation here](https://github.com/reduxjs/reselect) - but the cheatsheet version is - if you only have **one instance** of a component you can use the `get***` function, if you will have **multiple instances** of a component you need to use the equivelant `makeGet***` function to build your selectors. To be on the safe side, use the `makeGet***` - it only adds 1 additional line of code.
+
+
 ## Getting Started
 
 First, install the package
@@ -218,11 +223,11 @@ Restores the state back to how it was when initialised. Useful for logout type e
 
 #### Selectors (DataSelectors)
 
-Bear in mind that under the hood we are using [Reselect](https://github.com/reduxjs/reselect) for our selectors, there are, therefore, two types of every selector - you can read about this in detail in the [reselect documentation here](https://github.com/reduxjs/reselect) - but the cheatsheet version is - if you only have **one instance** of a component you can use the `get***` function, if you will have **multiple instances** of a component you need to use the equivelant `makeGet***` function to build your selectors. To be on the safe side, use the `makeGet***` - it only adds 1 additional line of code.
+
 
 ##### Listening to one location
 
-With all of the above stuff in mind about selectors, remember that `makeGet***` will return a function to select on and so the value passed to a `makeGet***` function does *NOT* perform the same function as the location value that is passed to the returned function.
+Remember that `makeGet***` will return a function to select on and so the value passed to a `makeGet***` function does *NOT* perform the same function as the location value that is passed to the returned function. [Read more here.](#Selectors---makeGet-and-get)
 
 
 <details><summary>DataSelectors.makeGetData(cacheName = null)</summary>
@@ -295,7 +300,7 @@ console.log(this.props.alertsCounter); // reads 0 if not defined, something else
 
 
 
-##### Listening to multiple locations
+##### Multiple locations
 
 Now, there is a problem with these selectors, while they may provide you with convenience, the whole point of selectors is to select just the data that changes so you don't end up render thrashing. Because of the structure of these selectors, they can lead to bad performance if missused. In general, it is better to overselect data (i.e. select staticData instead of staticData.one and staticData.two, even i there is staticData.three in the state) or use multiple selectors on the same component that have good re-use and caching than to use these.
 
