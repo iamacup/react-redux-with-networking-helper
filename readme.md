@@ -436,7 +436,200 @@ console.log(this.props.globalData.userAlertsCounter); // contains teh value in u
 
 ### The Network API
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### Actions (NetworkActions)
+
+##### Starting a Network Transaction
+
+
+<details><summary>NetworkActions.startGET(config), NetworkActions.startPOST(config), NetworkActions.startPATCH(config)</summary>
+<p>
+
+ * `NetworkActions.startGET(config)` 
+ * `NetworkActions.startPOST(config)` 
+ * `NetworkActions.startPATCH(config)`
+
+The configuration object takes this form:
+
 TODO
+
+</p>
+</details>
+
+
+##### Clearing network data
+
+<details><summary>clearNetworkData(identifier)</summary>
+<p>
+
+`NetworkActions.clearNetworkData(identifier)`
+
+TODO
+
+</p>
+</details>
+
+<details><summary>clearAllNetworkData()</summary>
+<p>
+
+`NetworkActions.clearAllNetworkData()`
+
+TODO
+
+</p>
+</details>
+
+
+##### Manipulating global headers
+
+<details><summary>addGlobalHeaders(headers)</summary>
+<p>
+
+`NetworkActions.addGlobalHeaders(headers)`
+
+TODO
+
+</p>
+</details>
+
+
+#### Selectors (NetworkSelectors)
+
+Remember that `makeGet***` will return a function to select on and so the value passed to a `makeGet***` function does *NOT* perform the same function as the location value that is passed to the returned function. [Read more here.](#Selectors---makeGet-and-get)
+
+
+##### Listening to a single request
+
+<details><summary>NetworkSelectors.makeGetNetworkData()</summary>
+<p>
+
+`NetworkSelectors.makeGetNetworkData()`
+
+</p>
+</details>
+
+<details><summary>NetworkSelectors.getNetworkData()</summary>
+<p>
+
+`NetworkSelectors.getNetworkData()`
+
+</p>
+</details>
+
+
+
+##### Listening to a multi request
+
+<details><summary>DataSelectors.makeGetNetworkDataMulti()</summary>
+<p>
+
+`DataSelectors.makeGetNetworkDataMulti()`
+
+</p>
+</details>
+
+<details><summary>DataSelectors.getNetworkDataMulti()</summary>
+<p>
+
+`DataSelectors.getNetworkDataMulti()`
+
+</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Custom Actions, Reducers, Selectors and Sagas
 

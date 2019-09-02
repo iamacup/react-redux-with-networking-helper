@@ -60,6 +60,8 @@ const defaultGetOptions = {
   cancelInFlightWithSameIdentifiers: true,
 };
 
+
+/* EXTERNAL */
 export function startGET(config) {
   return startRequest(config, 'get');
 }
@@ -71,6 +73,29 @@ export function startPOST(config) {
 export function startPATCH(config) {
   return startRequest(config, 'patch');
 }
+
+export function clearNetworkData(identifier) {
+  return {
+    type: 'GLOBAL_NETWORK_CLEAR_NETWORK_DATA',
+    identifier,
+  };
+}
+
+export function clearAllNetworkData() {
+  return {
+    type: 'GLOBAL_NETWORK_CLEAR_ALL_NETWORK_DATA',
+  };
+}
+
+export function addGlobalHeaders(headers) {
+  return {
+    type: 'GLOBAL_NETWORK_ADD_HEADERS',
+    headers,
+  };
+}
+
+
+/* INTERNAL */
 
 export function startRequest(config, method) {
   const useConfig = Object.assign({}, defaultGetOptions, config);
@@ -108,26 +133,6 @@ export function cleanupCancelledRequest(internalID) {
   return {
     type: 'GLOBAL_NETWORK_CLEANUP_CANCELLED_REQUEST',
     internalID,
-  };
-}
-
-export function clearNetworkData(identifier) {
-  return {
-    type: 'GLOBAL_NETWORK_CLEAR_NETWORK_DATA',
-    identifier,
-  };
-}
-
-export function clearAllNetworkData() {
-  return {
-    type: 'GLOBAL_NETWORK_CLEAR_ALL_NETWORK_DATA',
-  };
-}
-
-export function addGlobalHeaders(headers) {
-  return {
-    type: 'GLOBAL_NETWORK_ADD_HEADERS',
-    headers,
   };
 }
 
