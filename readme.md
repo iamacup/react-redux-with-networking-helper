@@ -480,5 +480,6 @@ TODO
  * A flag to toggle the redux logging middleware
  * stateUpdatedKeys - is it used?
  * Update the dependencies - don't need strict version numbers on stuff like prop-types etc.
-
+ * When cancelling active network request SAGA forks, the axios transactions are not interrupted and will still complete and return, this can lead to performance problems as the underlying device will probably limit how many connections are allowed, meaning its possible to take ages for things to complete even though the sagas are dead and don't care about the response
+ * We don't properly cleanup the timeouts when calling LOBAL_NETWORK_CLEAR_NETWORK_DATA
 

@@ -12,16 +12,25 @@ import { STATES } from '../../../networking/states';
 
 
 const initialState = {
+  // storage stuff here
+  _responses: {}, // this is what components tune into
+  _timeouts: {}, // this is stuff for tracking network timeouts etc.
+  _internals: {}, // this is for managing the internal state and meta data of an individual request
+
+  // meta data
   _globalHeaders: [],
-  _responses: {},
+  _globalCallbacks: {
+    _networkExceptionCallback: () => {},
+    _responseInterceptCallback: () => {},
+    _errorFormatterCallback: () => {},
+  },
   _networkConnectivityState: true,
-  _timeouts: {},
 };
 
 export const globalNetworkReducer = createReducer(initialState, {
   GLOBAL_NETWORK_REQUEST_INITIATE: (state, action) => produce(state, (draft) => {
-    // put identifying information onto the state - @TODO we don't actually do anything with this yet
-    draft[action.internalID] = {
+    // put identifying information onto the state
+    draft._internals[action.internalID] = {
       config: action.config,
     };
 
@@ -87,21 +96,23 @@ export const globalNetworkReducer = createReducer(initialState, {
     }
   }),
   GLOBAL_NETWORK_REQUEST_RESPONSE: (state, action) => produce(state, (draft) => {
-    if (action.internalID in state) {
-      const { config } = draft[action.internalID];
+    if (action.internalID in state._internals) {
+      const { config } = draft._internals[action.internalID];
 
       if (config.identifier !== null && isDefined(state._responses[config.identifier])) {
-        if (config.multi === true && isDefined(state._responses[config.identifier][config.multiIdentifier])) {
-          draft._responses[config.identifier][config.multiIdentifier] = {
-            state: action.state,
-            statusCode: action.statusCode,
-            data: action.data,
-            finished: true,
-            started: true,
-            startTimestamp: state._responses[config.identifier][config.multiIdentifier].startTimestamp,
-            endTimestamp: action.endTimestamp,
-            stateUpdatedKeys: action.stateUpdatedKeys,
-          };
+        if (config.multi === true) {
+          if(isDefined(state._responses[config.identifier][config.multiIdentifier])) {
+            draft._responses[config.identifier][config.multiIdentifier] = {
+              state: action.state,
+              statusCode: action.statusCode,
+              data: action.data,
+              finished: true,
+              started: true,
+              startTimestamp: state._responses[config.identifier][config.multiIdentifier].startTimestamp,
+              endTimestamp: action.endTimestamp,
+              stateUpdatedKeys: action.stateUpdatedKeys,
+            };
+          }
         } else {
           draft._responses[config.identifier] = {
             state: action.state,
@@ -116,7 +127,7 @@ export const globalNetworkReducer = createReducer(initialState, {
         }
       }
 
-      delete draft[action.internalID];
+      delete draft._internals[action.internalID];
     }
   }),
   GLOBAL_NETWORK_ADD_HEADERS: (state, action) => produce(state, (draft) => {
@@ -130,15 +141,20 @@ export const globalNetworkReducer = createReducer(initialState, {
 
     draft._globalHeaders = draft._globalHeaders.concat(action.headers);
   }),
-  GLOBAL_NETWORK_ADD_INTERNAL_REFERENCE_DATA: (state, action) => produce(state, (draft) => {
-    draft[action.key] = action.value;
+  GLOBAL_NETWORK_ADD_INTERNAL_GLOBAL_CALLBACKS: (state, action) => produce(state, (draft) => {
+    draft._globalCallbacks[action.key] = action.value;
+  }),
+  GLOBAL_NETWORK_CLEANUP_CANCELLED_REQUEST: (state, action) => produce(state, (draft) => {
+    delete draft._internals[action.internalID];
+    delete draft._timeouts[action.internalID];
   }),
   GLOBAL_NETWORK_CLEAR_NETWORK_DATA: (state, action) => produce(state, (draft) => {
     const identifiers = Array.isArray(action.identifier) ? action.identifier : [action.identifier];
 
     for (const identifier of identifiers) {
       delete draft._responses[identifier];
-      delete draft._timeouts[identifier];
+      // TODO would be nice to cleanup a timeout associated with the initial request maybe?
+      // it will eventually clean itself up in GLOBAL_NETWORK_EXPIRE_ITEM
     }
   }),
   GLOBAL_NETWORK_CLEAR_ALL_NETWORK_DATA: (state, action) => initialState,

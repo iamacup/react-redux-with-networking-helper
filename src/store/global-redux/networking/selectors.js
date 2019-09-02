@@ -1,6 +1,9 @@
 
 // import { createSelector } from 'reselect';
 
+// @TODO we really must document how these can all be called as it is quite messy and might
+// be better split out into multiple functions instead of multi purpose functions
+// that have different arguments for different types of scenarios
 import createDeepEqualitySelector from '../../../lib/createDeepEqualitySelector';
 import { isDefined } from '../../../lib/isDefined';
 import { STATES } from '../../../networking/states';
@@ -63,54 +66,13 @@ export const getNetworkDataMulti = createDeepEqualitySelector(
   data => data,
 );
 
-
-
-
-
+// Global headers
 export const getGlobalHeaders = createDeepEqualitySelector(
   [
     state => state.globalNetworkReducer._globalHeaders,
   ],
   data => data,
 );
-
-export const getGlobalErrorFormatter = createDeepEqualitySelector(
-  [
-    state => state.globalNetworkReducer._globalErrorFormatter,
-  ],
-  data => data,
-);
-
-export const getGlobalResponseIntercept = createDeepEqualitySelector(
-  [
-    state => state.globalNetworkReducer._globalResponseIntercept,
-  ],
-  data => data,
-);
-
-export const getNetworkExceptionCallback = createDeepEqualitySelector(
-  [
-    state => state.globalNetworkReducer._networkExceptionCallback,
-  ],
-  data => data,
-);
-
-export const getNetworkConnectivityState = createDeepEqualitySelector(
-  [
-    state => state.globalNetworkReducer._networkConnectivityState,
-  ],
-  data => data,
-);
-
-export const getNetworkTimeouts = createDeepEqualitySelector(
-  [
-    state => state.globalNetworkReducer._timeouts,
-  ],
-  data => data,
-);
-
-
-
 
 export const makeGetGlobalHeaders = () => createDeepEqualitySelector(
   [
@@ -119,23 +81,25 @@ export const makeGetGlobalHeaders = () => createDeepEqualitySelector(
   data => data,
 );
 
-export const makeGetGlobalErrorFormatter = () => createDeepEqualitySelector(
+// network timeouts
+export const getNetworkTimeouts = createDeepEqualitySelector(
   [
-    getGlobalErrorFormatter,
+    state => state.globalNetworkReducer._timeouts,
   ],
   data => data,
 );
 
-export const makeGetGlobalResponseIntercept = () => createDeepEqualitySelector(
+export const makeGetNetworkTimeouts = () => createDeepEqualitySelector(
   [
-    getGlobalResponseIntercept,
+    getNetworkTimeouts,
   ],
   data => data,
 );
 
-export const makeGetNetworkExceptionCallback = () => createDeepEqualitySelector(
+// connectivity state
+export const getNetworkConnectivityState = createDeepEqualitySelector(
   [
-    getNetworkExceptionCallback,
+    state => state.globalNetworkReducer._networkConnectivityState,
   ],
   data => data,
 );
@@ -147,9 +111,17 @@ export const makeGetNetworkConnectivityState = () => createDeepEqualitySelector(
   data => data,
 );
 
-export const makeGetNetworkTimeouts = () => createDeepEqualitySelector(
+// global callbacks
+export const getGlobalCallback = createDeepEqualitySelector(
   [
-    getNetworkTimeouts,
+    (state, identifier) => state.globalNetworkReducer._globalCallbacks['_'+identifier],
+  ],
+  data => data,
+);
+
+export const makeGetGlobalCallback = () => createDeepEqualitySelector(
+  [
+    getGlobalCallback,
   ],
   data => data,
 );

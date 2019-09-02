@@ -1,6 +1,6 @@
 
 import {
-  put, call, select, fork, take,
+  put, call, select, fork, take, cancelled, cancel,
 } from 'redux-saga/effects';
 
 // import { isDefined } from '@lib/isDefined';
@@ -10,7 +10,7 @@ import * as globalNetworkingActions from '../actions';
 import * as globalReferenceDataActions from '../../referenceData/actions';
 
 import {
-  getGlobalHeaders, getGlobalResponseIntercept, getGlobalErrorFormatter, getNetworkExceptionCallback, getNetworkConnectivityState, getNetworkData, getNetworkDataMulti,
+  getGlobalHeaders, getGlobalCallback, getNetworkConnectivityState, getNetworkData, getNetworkDataMulti,
 } from '../selectors';
 import { getData } from '../../referenceData/selectors';
 
@@ -21,13 +21,49 @@ export function* retryRequest(previousAction) {
   yield put(previousAction);
 }
 
+const tasks = {
+
+};
+
+const generateIdentifier = ({config}) => {
+  let taskIdentifier = null;
+
+  if (config.identifier !== null) {
+    const { identifier } = config;
+
+    if (config.multi === true) {
+      const { multiIdentifier } = config;
+      taskIdentifier = identifier+'-'+multiIdentifier;
+    } else {
+      taskIdentifier = identifier;
+    }
+  }
+  
+  return taskIdentifier;
+};
+
 export default function* performNetworkRequest(action) {
+  const taskIdentifier = yield call(generateIdentifier, action);
+
+  if(action.config.cancelInFlightWithSameIdentifiers === true && taskIdentifier !== null && taskIdentifier in tasks) {
+    yield cancel(tasks[taskIdentifier]);
+  }
+
+  const networkTask = yield fork(networkRequestWorker, action);
+
+  if(taskIdentifier !== null) {
+    tasks[taskIdentifier] = networkTask;
+  }
+}
+
+function* networkRequestWorker(action) {
   // load up some stuff from the global state
   const globalHeaders = yield select(getGlobalHeaders);
-  const globalErrorFormatter = yield select(getGlobalErrorFormatter);
-  const globalResponseIntercept = yield select(getGlobalResponseIntercept);
-  const networkExceptionHandler = yield select(getNetworkExceptionCallback);
   const connectivityState = yield select(getNetworkConnectivityState);
+     
+  const globalErrorFormatter = yield select(getGlobalCallback, 'errorFormatterCallback');
+  const globalResponseIntercept = yield select(getGlobalCallback, 'responseInterceptCallback');
+  const networkExceptionHandler = yield select(getGlobalCallback, 'networkExceptionCallback');
 
   let currentResponseState = null;
 
@@ -234,6 +270,16 @@ export default function* performNetworkRequest(action) {
 
       // finish
       yield put(globalNetworkingActions.networkResponse(action.internalID, STATES.ERROR, dataToState, err.response.status));
+    }
+  } finally {
+    const taskIdentifier = yield call(generateIdentifier, action);
+
+    if(taskIdentifier !== null) {
+      delete tasks[taskIdentifier];
+    }
+
+    if (yield cancelled()) {   
+      yield put(globalNetworkingActions.cleanupCancelledRequest(action.internalID));
     }
   }
 }

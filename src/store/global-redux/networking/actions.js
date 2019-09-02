@@ -55,6 +55,9 @@ const defaultGetOptions = {
 
   // once this many seconds have gone by, the network state will be set to TIMED_OUT, negative numbers are ignored entirely
   timeout: -1,
+
+  // basically this request will overwrite any existing requests that have not yet completed at the time of inserting, identified by their 'identifier' and (optionally) their 'multiIdentifier' values
+  cancelInFlightWithSameIdentifiers: true,
 };
 
 export function startGET(config) {
@@ -101,6 +104,13 @@ export function networkResponse(internalID, state, data, statusCode, stateUpdate
   };
 }
 
+export function cleanupCancelledRequest(internalID) {
+  return {
+    type: 'GLOBAL_NETWORK_CLEANUP_CANCELLED_REQUEST',
+    internalID,
+  };
+}
+
 export function clearNetworkData(identifier) {
   return {
     type: 'GLOBAL_NETWORK_CLEAR_NETWORK_DATA',
@@ -121,9 +131,9 @@ export function addGlobalHeaders(headers) {
   };
 }
 
-export function addInternalReferenceData(key, value) {
+export function addInternalGlobalCallback(key, value) {
   return {
-    type: 'GLOBAL_NETWORK_ADD_INTERNAL_REFERENCE_DATA',
+    type: 'GLOBAL_NETWORK_ADD_INTERNAL_GLOBAL_CALLBACKS',
     key,
     value,
   };

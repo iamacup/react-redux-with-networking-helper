@@ -18,16 +18,15 @@ class ReduxServiceMainView extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    // work out if the state was cleared in some way and re-introduce the bits we need
-    if (this.props._globalErrorFormatter === null && prevProps._globalErrorFormatter !== null) {
+    if (prevProps._globalErrorFormatter !== null && this.props._globalErrorFormatter.toString() !== prevProps._globalErrorFormatter.toString()) {
       this.props.$setGlobalErrorFormatter(this.props.globalErrorFormatter);
     }
 
-    if (this.props._globalResponseIntercept === null && prevProps._globalResponseIntercept !== null) {
+    if (prevProps._globalResponseIntercept !== null && this.props._globalResponseIntercept.toString() !== prevProps._globalResponseIntercept.toString()) {
       this.props.$setGlobalResponseIntercept(this.props.globalResponseIntercept);
     }
 
-    if (this.props._networkExceptionCallback === null && prevProps._networkExceptionCallback !== null) {
+    if (prevProps._networkExceptionCallback !== null && this.props._networkExceptionCallback.toString() !== prevProps._networkExceptionCallback.toString()) {
       this.props.$setNetworkExceptionCallback(this.props.networkExceptionCallback);
     }
 
