@@ -506,15 +506,15 @@ The configuration object has these parameters:
 | Value | Required | Default | Description                                                                 
 | --- | --- | --- | --- 
 | `responseTarget` | `false` | `null` | [see location documentation](#locations) - a string like `location.other.place` to target in the global data or null to not put it into the global data, use the `successFormatHandler` and `keyExtractor` to decide the format of what ends up here
-| `responseTargetMethod` | `false` | `set` | decides how to handle placement of the data onto the `responseTarget`, merge will shallow merge the object, set will just set it, concatFirst and concatLast will perform an array concatenation (start of end of the existing array) - note concat does not work with a value set on `keyExtractor`, which will be ignored
+| `responseTargetMethod` | `false` | `set` | decides how to handle placement of the data onto the `responseTarget`, `merge` will shallow merge the object, `set` will just set it, `concatFirst` and `concatLast` will perform an array concatenation (start of end of the existing array) - note the concat values do not work with a value set on `keyExtractor` - the extractor will be ignored
 
 
 **How to listen to the status of the network request**
 
 | Value | Required | Default | Description                                                                 
 | --- | --- | --- | --- 
-| `identifier` | `false` | `null` | Identifier used to monitor the status of this request if you don't need to hook into the response at all set this to null
-| `multiIdentifier` | `false` | `null` | If this is not null, it will be used as a sub identifier (see selectors to understand how it is used), if null and multi is set to true, uuid will be generated
+| `identifier` | `false` | `null` | Identifier used to monitor the status of this request if you don't need to hook into the response at all set this to null, check out the [selectors section](#selectors-networkselectors) for more info
+| `multiIdentifier` | `false` | `null` | If this is not null, it will be used as a sub identifier (see selectors to understand how it is used), if null and multi is set to true, uuid will be generated, check out the [selectors section](#selectors-networkselectors) for more info
 | `dumpSuccessResponseToNetworkState` | `false` | `false` | if this is set to true, the data will be put onto the network state (specified by `identifier/multiIdentifier`). Setting this to true will not stop anything that happened with responseTarget and it's chain of actions.
 
 
