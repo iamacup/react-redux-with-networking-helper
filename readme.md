@@ -86,11 +86,11 @@ Bear in mind that under the hood we are using [Reselect](https://github.com/redu
 For some selectors we allow for caching, that caching is applied to the `makeGet***` functions so that instead of having multiple components with many functions that do the same thing, we have multiple components with a single function that does the same thing.
 
 
-## API
+## APIs
 
 There are two different API's - the Data API and the Network API. There is no link from the Data API to the Network API, but there is a link from the Network API to the Data API - that is to say, network requests can modify the 'global state'.
 
-### The Data API
+## The Data API
 
 #### Actions (DataActions)
 
@@ -434,7 +434,7 @@ console.log(this.props.globalData.userAlertsCounter); // contains teh value in u
 </details>
 
 
-### The Network API
+## The Network API
 
 
 
@@ -465,6 +465,18 @@ console.log(this.props.globalData.userAlertsCounter); // contains teh value in u
 
 ##### Starting a Network Transaction
 
+Network transactions have a variety of configuration options, all detailed in the `NetworkActions.start*****` documentation, but fundementally there are two different types of request, and it matters because of how you will access them with the selectors:
+
+ * Single - has an identifier, and a state - good for *getting an individual users details*
+ * Multiple - has an identifier, a sub identifier, and each identifier/sub identifer combo has its own state - good for *getting paginated data*
+
+In addition, there are two types of data when it comes to network request
+
+ * The current state of the network request - you 'tune into' this with `makeGetNetworkData` or `getNetworkData` and it contains data about the current state of the transaction but does NOT (by default, although you can make it) contain the success response data - it will only contain error data by default.
+ * The response data - usually it is expected that this be dumped onto the global state and be accessed with the `DataSelectors` - you need to see the `responseTarget` parameter for more information in the `NetworkActions.start*****`
+
+The framework provides massive flexibility in how you handle response data, errors etc. but **the main idea is that the networking component updates the global state.**
+
 
 <details><summary>NetworkActions.startGET(config), NetworkActions.startPOST(config), NetworkActions.startPATCH(config)</summary>
 <p>
@@ -475,7 +487,63 @@ console.log(this.props.globalData.userAlertsCounter); // contains teh value in u
 
 The configuration object takes this form:
 
-TODO
+
+
+| Value | Required | Default | Description                                                                 
+| --- | --- | --- | --- 
+| url | `false` | `null` | This is the fully qualified domain name for 
+
+```
+{
+  // the url to hit
+  url: null,
+  // a string (location.other.place) to target in the global data or null to not put it into the global data
+  responseTarget: null,
+  // decides how to handle placement of the data onto the responseTarget, merge will shallow merge the object, set will just set it, concatFirst and concatLast will perform an array concatenation (start of end of the existing array) - note concat does not work with a key extractor
+  responseTargetMethod: 'set',
+  // identifier used to monitor the status of this request if you don't need to hook into the response at all set this to null,
+  identifier: null,
+  // any request data
+  data: {},
+  // if this is true, there can be more than 1 request for the same identifier, see multiIdentifier
+  multi: false,
+  // if this is not null, it will be used as a sub identifier (see selectors to understand how it is used), if null, uuid will be generated
+  multiIdentifier: null,
+
+  // a function that is called with any 200 <> 299 status code, can return an array of objects to be dumped into the responseTarget - the keyExtractor will be called to distribute them properly, if this does not return an array, it will not call the key extractor at all and just dump onto the location, if the key extractor is null, the response will just be dumped onto the location - existing data is NULL if no responseTarget specified, or is the current data in the store ({} if no data) at that target
+  // successFormatHandler: (data, statusCode, existingData, responseHeaders) => data,
+  successFormatHandler: null,
+  // a function that is called with any other status code not captured by the success handler, whatever is returned by this function is returned as the data attribute when there is an error, note it is possible for this function to recieve an exception (Error) type as well as an actual response, the statusCode will be -1 if this is the case with the error as the third argument, and the error.toString() value as the data
+  errorFormatHandler: null, // (data, statusCode, err, responseHeaders) => { return data; },
+  // a function that is called with any 200 <> 299 status code after the sucessFormatHandler in case you need to do any side effects as a result of a success condition
+  successCallback: null, // (/*formattedData, originalData, statusCode, responseHeaders*/) => {},
+  // called when there is an error
+  errorCallback: null, // (/*formattedData, originalData, statusCode, responseHeaders*/) => {},
+  // this function is called right before prior to successFormatHandler and the insert action for response target which can be used to remove / clean up old state changes
+  preDataInsertCleanupHandler: null, // (existingData, modifiedKeys, networkState, responseHeaders) => {}
+
+  // this is called for every element returned by the successFormatHandler and should return a key that will be used to allocate the data to the responseTarget.[key] location. if it is null then it will not be used and the data will be just dumped onto the object, this will not be called if the data returned from successFormatHAndler is not an array
+  keyExtractor: /* (item, index) => {}, */ null,
+  // This is called before the success format handler with the same conditions as success format handler (200 <> 299 status) - any thing return by this needs to be an array of { name: 'header-name', value: 'header-value' } and will update the global headers so every subsequent request has this thign in it, useful for authentication
+  setGlobalHeaders: /* (data, statusCode) => {}, */ null,
+
+  // array of additional headers in the format of { name: 'header-name', value: 'header-value' } to be added on, these are applied LAST so can overwride global headers
+  additionalHeaders: [],
+  // this is set as a Content-Type header for post requests, will be ignored if any Content-Type header is already set, set to null to just not use this at all
+  postDefaultContentType: 'application/json',
+  // if this is set to true, the data will be put onto the network state as well as anhything that happened with responseTarget etc. t
+  dumpSuccessResponseToNetworkState: false,
+
+  // if autoRetryOnNetworkReconnection is true, we will retry this network request if it fails due to network connectivity once connectivity is re-established
+  autoRetryOnNetworkReconnection: false,
+
+  // once this many seconds have gone by, the network state will be set to TIMED_OUT, negative numbers are ignored entirely
+  timeout: -1,
+
+  // basically this request will overwrite any existing requests that have not yet completed at the time of inserting, identified by their 'identifier' and (optionally) their 'multiIdentifier' values
+  cancelInFlightWithSameIdentifiers: true,
+}
+```
 
 </p>
 </details>
