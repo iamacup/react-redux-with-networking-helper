@@ -485,13 +485,16 @@ The framework provides massive flexibility in how you handle response data, erro
  * `NetworkActions.startPOST(config)` 
  * `NetworkActions.startPATCH(config)`
 
-The configuration object takes this form:
+The configuration object has these parameters:
 
-
+###### The main stuff
 
 | Value | Required | Default | Description                                                                 
 | --- | --- | --- | --- 
-| url | `false` | `null` | This is the fully qualified domain name for 
+| `url` | `true` | `null` | This is the fully qualified domain name for the request
+| `responseTarget` | `false` | `null` | [see location documentation](#locations) - a string like `location.other.place` to target in the global data or null to not put it into the global data
+| `responseTargetMethod` | `false` | `set` | decides how to handle placement of the data onto the responseTarget, merge will shallow merge the object, set will just set it, concatFirst and concatLast will perform an array concatenation (start of end of the existing array) - note concat does not work with a key extractor
+| `identifier` | `false` | `null` | identifier used to monitor the status of this request if you don't need to hook into the response at all set this to null
 
 ```
 {
@@ -597,6 +600,8 @@ Remember that `makeGet***` will return a function to select on and so the value 
 
 `NetworkSelectors.makeGetNetworkData()`
 
+TODO
+
 </p>
 </details>
 
@@ -604,6 +609,8 @@ Remember that `makeGet***` will return a function to select on and so the value 
 <p>
 
 `NetworkSelectors.getNetworkData()`
+
+TODO
 
 </p>
 </details>
@@ -617,6 +624,8 @@ Remember that `makeGet***` will return a function to select on and so the value 
 
 `DataSelectors.makeGetNetworkDataMulti()`
 
+TODO
+
 </p>
 </details>
 
@@ -624,6 +633,8 @@ Remember that `makeGet***` will return a function to select on and so the value 
 <p>
 
 `DataSelectors.getNetworkDataMulti()`
+
+TODO
 
 </p>
 </details>
