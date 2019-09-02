@@ -465,6 +465,8 @@ console.log(this.props.globalData.userAlertsCounter); // contains teh value in u
 
 ##### Starting a Network Transaction
 
+TODO flow chart of a network request here
+
 Network transactions have a variety of configuration options, all detailed in the `NetworkActions.start*****` documentation, but fundementally there are two different types of request, and it matters because of how you will access them with the selectors:
 
  * Single - has an identifier, and a state - good for *getting an individual users details*
@@ -489,33 +491,45 @@ The configuration object has these parameters:
 
 ###### The main stuff
 
+**The basics of the request**
+
 | Value | Required | Default | Description                                                                 
 | --- | --- | --- | --- 
 | `url` | `true` | `null` | This is the fully qualified domain name for the request
+| `data` | `false` | `{}` | The request data, ignored for GET requests
+| `multi` | `false` | `false` | if this is true, there can be more than 1 request for the same identifier, see `multiIdentifier`
+
+
+**What to do with the response**
+
+| Value | Required | Default | Description                                                                 
+| --- | --- | --- | --- 
 | `responseTarget` | `false` | `null` | [see location documentation](#locations) - a string like `location.other.place` to target in the global data or null to not put it into the global data
-| `responseTargetMethod` | `false` | `set` | decides how to handle placement of the data onto the responseTarget, merge will shallow merge the object, set will just set it, concatFirst and concatLast will perform an array concatenation (start of end of the existing array) - note concat does not work with a key extractor
-| `identifier` | `false` | `null` | identifier used to monitor the status of this request if you don't need to hook into the response at all set this to null
+| `responseTargetMethod` | `false` | `set` | decides how to handle placement of the data onto the `responseTarget`, merge will shallow merge the object, set will just set it, concatFirst and concatLast will perform an array concatenation (start of end of the existing array) - note concat does not work with a value set on `keyExtractor`, which will be ignored
+
+
+**How to handle the response data**
+
+| Value | Required | Default | Description                                                                 
+| --- | --- | --- | --- 
+| `identifier` | `false` | `null` | Identifier used to monitor the status of this request if you don't need to hook into the response at all set this to null
+| `multiIdentifier` | `false` | `null` | If this is not null, it will be used as a sub identifier (see selectors to understand how it is used), if null and multi is set to true, uuid will be generated
+
+
+**Lifecyle hooks**
+
+| Value | Required | Default | Description                                                                 
+| --- | --- | --- | --- 
+| `successFormatHandler` | `false` | `null` | `(data, statusCode, existingData, responseHeaders) => data`: a function that is called with any 200 <> 299 status code, can return an array of objects to be dumped into the `responseTarget` - the `keyExtractor` will be called to distribute them properly, if this does not return an array, it will not call the `keyExtractor` at all and just dump onto the `responseTarget`, if the `keyExtractor` is null, the response will just be dumped onto the `responseTarget` - `existingData` is NULL if no `responseTarget` specified, or is the current data in the store at that target
+
 
 ```
 {
-  // the url to hit
-  url: null,
-  // a string (location.other.place) to target in the global data or null to not put it into the global data
-  responseTarget: null,
-  // decides how to handle placement of the data onto the responseTarget, merge will shallow merge the object, set will just set it, concatFirst and concatLast will perform an array concatenation (start of end of the existing array) - note concat does not work with a key extractor
-  responseTargetMethod: 'set',
-  // identifier used to monitor the status of this request if you don't need to hook into the response at all set this to null,
-  identifier: null,
-  // any request data
-  data: {},
-  // if this is true, there can be more than 1 request for the same identifier, see multiIdentifier
-  multi: false,
-  // if this is not null, it will be used as a sub identifier (see selectors to understand how it is used), if null, uuid will be generated
-  multiIdentifier: null,
 
-  // a function that is called with any 200 <> 299 status code, can return an array of objects to be dumped into the responseTarget - the keyExtractor will be called to distribute them properly, if this does not return an array, it will not call the key extractor at all and just dump onto the location, if the key extractor is null, the response will just be dumped onto the location - existing data is NULL if no responseTarget specified, or is the current data in the store ({} if no data) at that target
-  // successFormatHandler: (data, statusCode, existingData, responseHeaders) => data,
-  successFormatHandler: null,
+
+
+
+
   // a function that is called with any other status code not captured by the success handler, whatever is returned by this function is returned as the data attribute when there is an error, note it is possible for this function to recieve an exception (Error) type as well as an actual response, the statusCode will be -1 if this is the case with the error as the third argument, and the error.toString() value as the data
   errorFormatHandler: null, // (data, statusCode, err, responseHeaders) => { return data; },
   // a function that is called with any 200 <> 299 status code after the sucessFormatHandler in case you need to do any side effects as a result of a success condition
