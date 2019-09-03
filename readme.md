@@ -772,4 +772,5 @@ TODO
  * When cancelling active network request SAGA forks, the axios transactions are not interrupted and will still complete and return, this can lead to performance problems as the underlying device will probably limit how many connections are allowed, meaning its possible to take ages for things to complete even though the sagas are dead and don't care about the response
  * We don't properly cleanup the timeouts when calling LOBAL_NETWORK_CLEAR_NETWORK_DATA
  * rework the postDefaultContentType config option on requests - should be a global config / with optional override to the specific request
+ * Update the docs to show the default value selection on the global data
 
