@@ -17,7 +17,7 @@ export default class REDUX extends Component {
   constructor(props) {
     super(props);
 
-    StoreConfig.initiateStore(this.props.additionalReducers);
+    StoreConfig.initiateStore(this.props.additionalReducers, this.props.persistorStorageOverride);
 
     const { persistor, store } = StoreConfig.getStoreObjects();
 
@@ -64,6 +64,7 @@ REDUX.defaultProps = {
   globalResponseIntercept: () => {},
   networkTestAction: {},
   networkTestDelay: 10000,
+  persistorStorageOverride: null,
 };
 
 REDUX.propTypes = {
@@ -75,4 +76,5 @@ REDUX.propTypes = {
   children: PropTypes.any.isRequired,
   networkTestAction: PropTypes.object,
   networkTestDelay: PropTypes.number,
+  persistorStorageOverride: PropTypes.any,
 };

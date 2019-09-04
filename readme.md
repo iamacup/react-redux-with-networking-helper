@@ -31,6 +31,24 @@ This 'global state' is then updated, either directly through actions on componen
 There are some subtleties and complexities about this library, i think it is best to use the examples and then jump into the API documentation to understand why things are as they are, rather than the other way around :)
 
 
+## A note for react-native
+
+There are problems with react native on android with large states when usinig the redux-persist library. If you want to work around this, you need to install [redux-persist-filesystem-storage](https://github.com/robwalkerco/redux-persist-filesystem-storage) into your project and link it correctly, then pass the storage into the Wrapper like this:
+
+```
+import FilesystemStorage from 'redux-persist-filesystem-storage';
+import { Platform } from 'react-native';
+...
+
+<ReduxWrapper
+  persistorStorageOverride={ Platform.OS === 'android' ? FilesystemStorage : null }
+<
+...
+</ReduxWrapper>
+
+...
+```
+
 ## Getting Started
 
 First, install the package

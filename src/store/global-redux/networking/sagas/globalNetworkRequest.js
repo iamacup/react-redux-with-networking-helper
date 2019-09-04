@@ -25,7 +25,7 @@ const tasks = {
 
 };
 
-const generateIdentifier = ({config}) => {
+const generateIdentifier = ({ config }) => {
   let taskIdentifier = null;
 
   if (config.identifier !== null) {
@@ -33,25 +33,25 @@ const generateIdentifier = ({config}) => {
 
     if (config.multi === true) {
       const { multiIdentifier } = config;
-      taskIdentifier = identifier+'-'+multiIdentifier;
+      taskIdentifier = identifier + '-' + multiIdentifier;
     } else {
       taskIdentifier = identifier;
     }
   }
-  
+
   return taskIdentifier;
 };
 
 export default function* performNetworkRequest(action) {
   const taskIdentifier = yield call(generateIdentifier, action);
 
-  if(action.config.cancelInFlightWithSameIdentifiers === true && taskIdentifier !== null && taskIdentifier in tasks) {
+  if (action.config.cancelInFlightWithSameIdentifiers === true && taskIdentifier !== null && taskIdentifier in tasks) {
     yield cancel(tasks[taskIdentifier]);
   }
 
   const networkTask = yield fork(networkRequestWorker, action);
 
-  if(taskIdentifier !== null) {
+  if (taskIdentifier !== null) {
     tasks[taskIdentifier] = networkTask;
   }
 }
@@ -60,7 +60,7 @@ function* networkRequestWorker(action) {
   // load up some stuff from the global state
   const globalHeaders = yield select(getGlobalHeaders);
   const connectivityState = yield select(getNetworkConnectivityState);
-     
+
   const globalErrorFormatter = yield select(getGlobalCallback, 'errorFormatterCallback');
   const globalResponseIntercept = yield select(getGlobalCallback, 'responseInterceptCallback');
   const networkExceptionHandler = yield select(getGlobalCallback, 'networkExceptionCallback');
@@ -274,11 +274,11 @@ function* networkRequestWorker(action) {
   } finally {
     const taskIdentifier = yield call(generateIdentifier, action);
 
-    if(taskIdentifier !== null) {
+    if (taskIdentifier !== null) {
       delete tasks[taskIdentifier];
     }
 
-    if (yield cancelled()) {   
+    if (yield cancelled()) {
       yield put(globalNetworkingActions.cleanupCancelledRequest(action.internalID));
     }
   }

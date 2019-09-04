@@ -101,7 +101,7 @@ export const globalNetworkReducer = createReducer(initialState, {
 
       if (config.identifier !== null && isDefined(state._responses[config.identifier])) {
         if (config.multi === true) {
-          if(isDefined(state._responses[config.identifier][config.multiIdentifier])) {
+          if (isDefined(state._responses[config.identifier][config.multiIdentifier])) {
             draft._responses[config.identifier][config.multiIdentifier] = {
               state: action.state,
               statusCode: action.statusCode,
@@ -170,7 +170,7 @@ export const globalNetworkReducer = createReducer(initialState, {
 
       if (state._timeouts[action.internalID].identifier in state._responses) {
         if (timeout.multi === true) {
-          if(timeout.multiIdentifier in draft._responses[timeout.identifier]) {
+          if (timeout.multiIdentifier in draft._responses[timeout.identifier]) {
             draft._responses[timeout.identifier][timeout.multiIdentifier].state = STATES.TIMED_OUT;
           }
         } else {

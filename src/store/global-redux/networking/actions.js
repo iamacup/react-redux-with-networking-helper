@@ -162,4 +162,3 @@ export function setConnectivityUp() {
     type: 'GLOBAL_NETWORK_SET_CONNECTIVITY_STATE_UP',
   };
 }
-

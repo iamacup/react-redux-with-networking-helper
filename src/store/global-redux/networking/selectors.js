@@ -114,7 +114,7 @@ export const makeGetNetworkConnectivityState = () => createDeepEqualitySelector(
 // global callbacks
 export const getGlobalCallback = createDeepEqualitySelector(
   [
-    (state, identifier) => state.globalNetworkReducer._globalCallbacks['_'+identifier],
+    (state, identifier) => state.globalNetworkReducer._globalCallbacks['_' + identifier],
   ],
   data => data,
 );

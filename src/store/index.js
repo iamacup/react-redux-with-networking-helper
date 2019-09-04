@@ -18,7 +18,11 @@ const config = {
 let persistor = null;
 let store = null;
 
-const initiateStore = (userReducers) => {
+const initiateStore = (userReducers, persistorStorageOverride) => {
+  if (persistorStorageOverride !== null) {
+    config.storage = persistorStorageOverride;
+  }
+
   let finalReducers = {};
 
   for (const item of rootReducers) {
