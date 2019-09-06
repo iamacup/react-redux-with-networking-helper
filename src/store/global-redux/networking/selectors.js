@@ -17,6 +17,7 @@ const initialNetworkResponseState = {
   startTimestamp: null,
   endTimestamp: null,
   stateUpdatedKeys: null,
+  _internalID: null,
 };
 
 const initialNetworkResponseStateMulti = {};

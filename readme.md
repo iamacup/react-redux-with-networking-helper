@@ -49,6 +49,12 @@ import { Platform } from 'react-native';
 ...
 ```
 
+## Something about the persistor
+
+We only persist network transactions to the storage once they are finished, this is to stop the case where the runtime crashes, and is then restarted but with half complete network transaction states in the global state that no saga is operating on and will never complete.
+
+
+
 ## Getting Started
 
 First, install the package

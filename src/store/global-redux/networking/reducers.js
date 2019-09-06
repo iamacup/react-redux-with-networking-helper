@@ -62,6 +62,7 @@ export const globalNetworkReducer = createReducer(initialState, {
           startTimestamp: action.startTimestamp,
           endTimestamp: null,
           stateUpdatedKeys: null,
+          _internalID: action.internalID,
         };
       } else {
         let useState = STATES.LOADING;
@@ -79,6 +80,7 @@ export const globalNetworkReducer = createReducer(initialState, {
           startTimestamp: action.startTimestamp,
           endTimestamp: null,
           stateUpdatedKeys: null,
+          _internalID: action.internalID,
         };
       }
 
@@ -111,6 +113,7 @@ export const globalNetworkReducer = createReducer(initialState, {
               startTimestamp: state._responses[config.identifier][config.multiIdentifier].startTimestamp,
               endTimestamp: action.endTimestamp,
               stateUpdatedKeys: action.stateUpdatedKeys,
+              _internalID: action.internalID,
             };
           }
         } else {
@@ -123,6 +126,7 @@ export const globalNetworkReducer = createReducer(initialState, {
             startTimestamp: state._responses[config.identifier].startTimestamp,
             endTimestamp: action.endTimestamp,
             stateUpdatedKeys: action.stateUpdatedKeys,
+            _internalID: action.internalID,
           };
         }
       }
