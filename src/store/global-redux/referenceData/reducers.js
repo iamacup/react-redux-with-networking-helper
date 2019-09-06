@@ -77,6 +77,13 @@ export const globalReferenceDataReducer = createReducer(initialState, {
 
     ref[location] = useData.concat(ref[location]);
   }),
+  GLOBAL_REFERENCE_DATA_CLEAR_WITH_IGNORES: (state, action) => produce(state, (draft) => {
+    for (const item in state) {
+      if (!action.ignores.includes(item)) {
+        delete draft[item];
+      }
+    }
+  }),
   GLOBAL_REFERENCE_DATA_CONCAT_LAST_DATA: (state, action) => produce(state, (draft) => {
     const { ref, location } = getDraftRef(action, draft);
 
