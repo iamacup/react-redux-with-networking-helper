@@ -50,15 +50,15 @@ Then you are ready to go - you can connect up any components to the store and us
 
 ## Examples
 
-TODO
+#### React Native
 
 <details><summary>Basic Data API</summary>
 <p>
 
-This is not a real use case! In this example we use the data API like the this.setState API, note that this example will persist over reloads and, in the case of react-native, application crashes.
+This is not a real use case! In this example we use the data API like the this.setState API, note that this example will persist over reloads and application crashes due to the persistor.
 
- * [no hooks](./ting)
- * [hooks](./ting)
+ * [no hooks](./examples/simple)
+ * [hooks](./examples/simplehooks)
 
 </p>
 </details>
@@ -67,6 +67,10 @@ This is not a real use case! In this example we use the data API like the this.s
 * Using the Networking API
 * Using the Data and Networking API together
 * Advanced and fun stuff
+
+#### React DOM
+
+**TODO**
 
 
 ## How To Think About It
