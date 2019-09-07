@@ -1,5 +1,13 @@
 # react-redux-with-networking-helper
 
+#### Required versions**
+
+**react** > 16.8.6
+or
+**react-native** > 0.60.0 
+
+#### Project
+
 This project aims to produce a low code, high productivity solution to working with React/Redux and networking.
 
 It stores networking state and 'global' state separately, but provides tools for combining the two effectively - keeping a single source of truth about your application while simultaneously updating it with network data.
@@ -7,28 +15,6 @@ It stores networking state and 'global' state separately, but provides tools for
 In addition, the library provides some utilities to handle disconnection and network retry as well as 'expiration' of network requests over time.
 
 This project was built for React Native, although its dependencies should all work with a React DOM project.
-
-**Note:** This project is still in it's early stages and does have a TODO list, any feedback is welcome.
-
-
-## Under the Hood
-
-Under the hood we use the following:
-
- * **axios** - for all the networking
- * **react-redux** - for the global state
- * **redux-saga** - to handle sagary stuff (networking, in this case)
- * **reselect** - to let us efficiently subscribe to state changes on components without causing re-renders
- * **immer** - for easy global state manipulation
-
-
-## How To Think About It
-
-The whole point of this library is to have a single source of data truth - the 'global state' - this state can then be 'tuned in to' by various components using the connect method from react-redux in order to get updates. We have a bunch of selectors for selecting this data in a convenient way.
-
-This 'global state' is then updated, either directly through actions on components - i.e. when you need to update the user's current handle - or indirectly through network data - i.e. when you just logged in and need to update the current users object.
-
-There are some subtleties and complexities about this library, i think it is best to use the examples and then jump into the API documentation to understand why things are as they are, rather than the other way around :)
 
 
 ## Getting Started
@@ -56,6 +42,34 @@ export default class Entrypoint extends Component {
 Then you are ready to go - you can connect up any components to the store and use any of the API's below, or create and use your own.
 
 
+## Examples
+
+TODO
+
+* Using the Data API
+* Using the Networking API
+* Using the Data and Networking API together
+* Advanced and fun stuff
+
+
+## How To Think About It
+
+The whole point of this library is to have a single source of data truth - the 'global state' - this state can then be 'tuned in to' by various components using the connect method from react-redux in order to get updates. We have a bunch of selectors for selecting this data in a convenient way.
+
+This 'global state' is then updated, either directly through actions on components - i.e. when you need to update the user's current handle - or indirectly through network data - i.e. when you just logged in and need to update the current users object.
+
+
+## Under the Hood
+
+Under the hood we use the following:
+
+ * **axios** - for all the networking
+ * **react-redux** - for the global state
+ * **redux-saga** - to handle sagary stuff (networking, in this case)
+ * **reselect** - to let us efficiently subscribe to state changes on components without causing re-renders
+ * **immer** - for easy global state manipulation
+
+
 ## A note for react-native
 
 There are problems with react native on android with large states when usinig the redux-persist library. If you want to work around this, you need to install [redux-persist-filesystem-storage](https://github.com/robwalkerco/redux-persist-filesystem-storage) into your project and link it correctly, then pass the storage into the Wrapper like this:
@@ -77,15 +91,6 @@ import { Platform } from 'react-native';
 ## Something about the persistor
 
 We only persist network transactions to the storage once they are finished, this is to stop the case where the runtime crashes, and is then restarted but with half complete network transaction states in the global state that no saga is operating on and will never complete.
-
-
-## Some Examples
-
-TODO
-
-* Simple data update
-* Simple network request
-* Paginated network request
 
 
 ## Locations
@@ -1015,7 +1020,7 @@ TODO - not supported yet
  * A flag to toggle the redux logging middleware
  * Update the dependencies - don't need strict version numbers on stuff like prop-types etc.
  * When cancelling active network request SAGA forks, the axios transactions are not interrupted and will still complete and return, this can lead to performance problems as the underlying device will probably limit how many connections are allowed, meaning its possible to take ages for things to complete even though the sagas are dead and don't care about the response
- * We don't properly cleanup the timeouts when calling LOBAL_NETWORK_CLEAR_NETWORK_DATA
+ * We don't properly cleanup the timeouts when calling LOCAL_NETWORK_CLEAR_NETWORK_DATA
  * need to do something to support state migrations as is supported by react-redux
  * test what will happen is networkTestAction is not specified - we need to not store up network requests if we have no way of unblocking them etc.
  * toggle if you want to even use the persistor
