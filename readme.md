@@ -31,30 +31,6 @@ This 'global state' is then updated, either directly through actions on componen
 There are some subtleties and complexities about this library, i think it is best to use the examples and then jump into the API documentation to understand why things are as they are, rather than the other way around :)
 
 
-## A note for react-native
-
-There are problems with react native on android with large states when usinig the redux-persist library. If you want to work around this, you need to install [redux-persist-filesystem-storage](https://github.com/robwalkerco/redux-persist-filesystem-storage) into your project and link it correctly, then pass the storage into the Wrapper like this:
-
-```
-import FilesystemStorage from 'redux-persist-filesystem-storage';
-import { Platform } from 'react-native';
-...
-
-<ReduxWrapper
-  persistorStorageOverride={ Platform.OS === 'android' ? FilesystemStorage : null }
-<
-...
-</ReduxWrapper>
-
-...
-```
-
-## Something about the persistor
-
-We only persist network transactions to the storage once they are finished, this is to stop the case where the runtime crashes, and is then restarted but with half complete network transaction states in the global state that no saga is operating on and will never complete.
-
-
-
 ## Getting Started
 
 First, install the package
@@ -78,6 +54,29 @@ export default class Entrypoint extends Component {
 ```
 
 Then you are ready to go - you can connect up any components to the store and use any of the API's below, or create and use your own.
+
+
+## A note for react-native
+
+There are problems with react native on android with large states when usinig the redux-persist library. If you want to work around this, you need to install [redux-persist-filesystem-storage](https://github.com/robwalkerco/redux-persist-filesystem-storage) into your project and link it correctly, then pass the storage into the Wrapper like this:
+
+```
+import FilesystemStorage from 'redux-persist-filesystem-storage';
+import { Platform } from 'react-native';
+...
+
+<ReduxWrapper
+  persistorStorageOverride={ Platform.OS === 'android' ? FilesystemStorage : null }
+<
+...
+</ReduxWrapper>
+
+...
+```
+
+## Something about the persistor
+
+We only persist network transactions to the storage once they are finished, this is to stop the case where the runtime crashes, and is then restarted but with half complete network transaction states in the global state that no saga is operating on and will never complete.
 
 
 ## Some Examples
@@ -122,24 +121,12 @@ You can pass any of these as properties to the `<ReduxWrapper>` component, all a
 | --- | --- | ---
 | `setDebugWithCurlirize` | `false` | Will print all network out as curl commands
 | `networkExceptionCallback` | `(err) => {}` | Is called for any exceptions that occur in axios, *application order* can be seen [here](#network-request-flow)
-| `globalResponseIntercept` | `(obj) => {}` | Is called for all network responses with the obj formatted like this:<br><br>`{<br>type: 'error' | 'success',<br>insertData: <data after relevant formatters are applied>,<br>responseData: <the original network response data> | <exception object if responseStatusCode is -1>,<br>responseStatusCode: <response status code> | <-1 if an exception>,<br>responseHeaders: <response headers> | <empty object if an exception>,<br>}`
-
-
-  setDebugWithCurlirize: false,
-
-  networkExceptionCallback: () => {},
-  globalResponseIntercept: () => {},
-  globalErrorFormatter: data => data,
-
-  additionalReducers: [],
-  
-  networkTestAction: {},
-  networkTestDelay: 10000,
-  
-  persistorStorageOverride: null,
-
-
-
+| `globalResponseIntercept` | `(obj) => {}` | Is called for all network responses with the obj formatted like this:<br><br>{<br>`    type`: 'error' or 'success',<br>`    insertData`: 'data after relevant formatters are applied',<br>`    responseData`: 'the original network response data' or 'exception object if responseStatusCode is -1',<br>`    responseStatusCode:` 'response status code' or '-1 if an exception',<br>`    responseHeaders`: 'response headers' or 'empty object if an exception',<br>}<br><br>*application order* can be seen [here](#network-request-flow)
+| `globalErrorFormatter` | `(data) => data` | This is called for any error condition, see order [here](#network-request-flow), and should return any data format you want to use in subsequent items, this is useful because often you want to format your error data from an API in a specifc, and global way.
+| `additionalReducers` | `[]` | Should contain any additional reducers that you want to include in the state, you can fire actions that will be picked up by these in any connected component.
+| `networkTestAction` | `{}` | If specified as some `NetworkActions.start***` action, this will be used to test for network connectivity changes once a downtime event is triggered. I.e.<br><br> `networkTestAction={NetworkActions.startGET({url: 'https://some-test-url'})}`.<br><br>All network connections that fail, with this specified, will be queued up if they have `autoRetryOnNetworkReconnection` set to true on their indificual config.
+| `networkTestDelay` | `10000` | This is the delay between uptime checks on the `networkTestAction`
+| `persistorStorageOverride` | `null` | Provide an alternative storage method for the persistor, see more [here](#a-note-for-react-native)
 
 
 ## The Data API
@@ -596,7 +583,7 @@ The `requestConfig` object has these parameters:
 
 | Value | Required | Default | Description                                                                 
 | --- | --- | --- | --- 
-| `autoRetryOnNetworkReconnection` | `false` | `false` | If autoRetryOnNetworkReconnection is true, we will retry this network request if it fails due to network connectivity once connectivity is re-established, tested with `networkTestAction` set on the `ReduxWrapper`
+| `autoRetryOnNetworkReconnection` | `false` | `false` | If autoRetryOnNetworkReconnection is true, we will retry this network request if it fails due to network connectivity once connectivity is re-established, tested with `networkTestAction` set on the `ReduxWrapper`. Make sure `networkTestAction` is specified or these network connections will not be retried.
 | `timeout` | `false` | `-1` | Once this many seconds have gone by, the network state will be set to TIMED_OUT, negative numbers are ignored entirely
 | `cancelInFlightWithSameIdentifiers` | `false` | `true` | If this is set to true, then we match against some identifier/multiIdentifier combo - if they are the same, any in flight request is cancelled and replaced with the new one.
 
@@ -832,4 +819,7 @@ TODO
  * Update the docs to show the default value selection on the global data
  * need to do something to support state migrations
  * There is probably a problem when using the 'delete in flight' - cancelInFlightWithSameIdentifiers - thing and multiple network requests overwriting the storage - should shift to useing the internal id when cancelInFlightWithSameIdentifiers is fale or just not store them??? 
+ * test what will happen is networkTestAction is not specified - we need to not store up network requests if we have no way of unblocking them etc.
+ * check how autoRetryOnNetworkReconnection works - assume only things with this epcfieid will rely on networkTestAction?
+ * toggle for the persistor at all
 
