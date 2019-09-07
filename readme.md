@@ -166,7 +166,7 @@ You can access methods on the ReduxWrapper like this:
 ```
 
 | Property | Description                                                      
-| --- | --- | ---
+| --- | --- 
 | `persistorPurge` | Will clear the persistor storage completely.
 
 
