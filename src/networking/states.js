@@ -5,5 +5,5 @@ export const STATES = {
   RELOADING: 'reloading', // we are 're' loading something
   ERROR: 'error', // there was an error
   SUCCESS: 'success', // there was success
-  TIMED_OUT: 'timed-out', // we have timed out the data
+  EXPIRED: 'timed-out', // we have timed out the data
 };

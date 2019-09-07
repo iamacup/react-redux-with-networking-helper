@@ -179,10 +179,10 @@ export const globalNetworkReducer = createReducer(initialState, {
       if (state._timeouts[action.internalID].identifier in state._responses) {
         if (timeout.multi === true) {
           if (timeout.multiIdentifier in draft._responses[timeout.identifier]) {
-            draft._responses[timeout.identifier][timeout.multiIdentifier].state = STATES.TIMED_OUT;
+            draft._responses[timeout.identifier][timeout.multiIdentifier].state = STATES.EXPIRED;
           }
         } else {
-          draft._responses[timeout.identifier].state = STATES.TIMED_OUT;
+          draft._responses[timeout.identifier].state = STATES.EXPIRED;
         }
       }
     }

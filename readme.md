@@ -354,15 +354,11 @@ console.log(this.props.alertsCounter); // reads 0 if not defined, something else
 
 
 ```
-const makeMapStateToProps = () => {
-  function mapStateToProps(state) {
-    return {
-      alertsCounter: DataSelectors.getData(state, 'user.alerts.counter', 0),
-    };
-  }
-
-  return mapStateToProps;
-};
+function mapStateToProps(state) {
+  return {
+    alertsCounter: DataSelectors.getData(state, 'user.alerts.counter', 0),
+  };
+}
 ```
 
 Which will return the data in user.alerts.counter, or 0 if it does not exist.
@@ -449,11 +445,7 @@ console.log(this.props.globalData.userAlertsCounter); // contains teh value in u
 <details><summary>DataSelectors.getDataMulti()</summary>
 <p>
 
-`DataSelectors.getDataMulti()`
-
-returns a function with the signature
-
-* `(state, inputLocations)`
+`DataSelectors.getDataMulti(state, inputLocations)`
 
 where inputLocations is an array of object like this:
 
@@ -478,18 +470,14 @@ eg:
 This returns a function that can be used to select data like this:
 
 ```
-const makeMapStateToProps = () => {
-  function mapStateToProps(state) {
-    return {
-      globalData: DataSelectors.getDataMulti(state, [
-        { name: 'appState', location: 'app.state' },
-        { name: 'userAlertsCounter', location: 'user.alerts.counter', emptyReturnValue: 0},
-      ]),
-    };
-  }
-
-  return mapStateToProps;
-};
+function mapStateToProps(state) {
+  return {
+    globalData: DataSelectors.getDataMulti(state, [
+      { name: 'appState', location: 'app.state' },
+      { name: 'userAlertsCounter', location: 'user.alerts.counter', emptyReturnValue: 0},
+    ]),
+  };
+}
 ```
 
 Which will return the data both the app.state location and the user.alerts.counter location
@@ -630,7 +618,7 @@ The `requestConfig` object has these parameters:
 | Value | Required | Default | Description                                                                 
 | --- | --- | --- | --- 
 | `autoRetryOnNetworkReconnection` | `false` | `false` | If autoRetryOnNetworkReconnection is true, we will retry this network request if it fails due to network connectivity once connectivity is re-established, tested with `networkTestAction` set on the `ReduxWrapper`. Make sure `networkTestAction` is specified or these network connections will not be retried.
-| `timeout` | `false` | `-1` | Once this many seconds have gone by, the network state will be set to TIMED_OUT, negative numbers are ignored entirely
+| `timeout` | `false` | `-1` | Once this many seconds have gone by, the network state will be set to EXPIRED, negative numbers are ignored entirely
 | `cancelInFlightWithSameIdentifiers` | `false` | `true` | If this is set to true, then we match against some identifier/multiIdentifier combo - if they are the same, any in flight request is cancelled and replaced with the new one.
 
 
@@ -691,6 +679,78 @@ Any headers in the state with the same name will be overwritten.
 Remember that `makeGet***` will return a function to select on and so the value passed to a `makeGet***` function does *NOT* perform the same function as the location value that is passed to the returned function. [Read more here.](#Selectors---makeGet-and-get)
 
 
+##### Network response object
+
+When usiong a network selector there are a couple of scenarios to worry about:
+
+1. Single request selectors always return an object with the structure outlined below
+2. Multi request selectors return a keyed object, if a request was started for a specific key then it will have the structure outline below, if it is not started it will be undefined - this is a limitation because we do not know ahead of time what the 'multi identifiers' will be so can't get the selector to populate them with 'not started'
+
+
+<details><summary>Structure of the response object</summary>
+<p>
+
+
+The object takes this form: 
+
+```
+{
+  state: NetworkStates.NOT_STARTED || NetworkStates.LOADING || NetworkStates.RELOADING ||  || NetworkStates.ERROR || NetworkStates.SUCCESS || NetworkStates.EXPIRED,
+  statusCode: null || <response status code>,
+  data: {} || <error data> || <success data if requestConfig.dumpSuccessResponseToNetworkState set to true>,
+  started: false || true,
+  finished: false || true,
+  startTimestamp: null || <timestamp>,
+  endTimestamp: null || <timestamp>,
+  stateUpdatedKeys: null || <array of keys>,
+  _internalID: null || <internal tracking ID for this library>,
+}
+```
+
+Some details about the values:
+
+| Value | Description                                                                 
+| --- | ---
+| `state` | Is a value that indicates what sort of state the network request is in so you can show loading spinners etc.
+| `statusCode` | Will be null until the `state` is either `NetworkStates.ERROR` or `NetworkStates.SUCCESS` or `NetworkStates.EXPIRED`
+| `data` | Will contain data if `state` `=` `NetworkStates.ERROR` OR if `state` `=` `NetworkStates.SUCCESS` and `requestConfig.dumpSuccessResponseToNetworkState` `=` `true`
+| `started` | False if the request is not started for single requests, it will never be false for a multi request as starting a multi request is the thing that populates the relevant key on the multi identifier object
+| `false` | False if the state is not `NetworkStates.ERROR` or `NetworkStates.SUCCESS` or `NetworkStates.EXPIRED`
+| `startedTimestamp` | The time the network request was started
+| `endTimestamp` | The time the network request ended
+| `stateUpdatedKeys` | Details the keys the `requestConfig.keyExtractor` updated as part of this request
+| `_internalID` | Used by this library internally
+
+</p>
+</details>
+
+
+<details><summary>NetworkStates object</summary>
+<p>
+
+Network requests have a set of 'states' associated with them - you can compare the current state of a network request to the `NetworkStates` object
+
+```
+import { NetworkStates } from 'react-redux-with-networking-helper';
+
+console.log(NetworkState);
+
+{
+  NOT_STARTED: 'not-started', // not started - note this will never be seen for multi requests
+  LOADING: 'loading', // we are loading something (for the first time)
+  RELOADING: 'reloading', // we are 're' loading something
+  ERROR: 'error', // there was an error
+  SUCCESS: 'success', // there was success
+  EXPIRED: 'timed-out', // a request has been expired because of the requestConfig.timeout value
+}
+```
+
+</p>
+</details>
+
+
+
+
 ##### Listening to a single request
 
 <details><summary>NetworkSelectors.makeGetNetworkData()</summary>
@@ -698,17 +758,55 @@ Remember that `makeGet***` will return a function to select on and so the value 
 
 `NetworkSelectors.makeGetNetworkData()`
 
-TODO
+Returns a function with the signature
+
+* `(state, identifier)`
+
+Where identifier matches whatever you used in the initial request config.
+
+The useage is like this:
+
+```
+const makeMapStateToProps = () => {
+  const getNetworkData = NetworkSelectors.makeGetNetworkData();
+
+  function mapStateToProps(state) {
+    return {
+      _networkData: getNetworkData(state, 'user-settings'),
+    };
+  }
+
+  return mapStateToProps;
+};
+```
+
+Which returns data in this format onto the `_networkData` property, details of which can be found [here](#network-response-object)
+
 
 </p>
 </details>
 
+
 <details><summary>NetworkSelectors.getNetworkData()</summary>
 <p>
 
-`NetworkSelectors.getNetworkData()`
+`NetworkSelectors.getNetworkData(state, identifier)`
 
-TODO
+Where identifier matches whatever you used in the initial request config.
+
+The useage is like this:
+
+```
+function mapStateToProps(state) {
+  return {
+    _networkData: NetworkSelectors.getNetworkData(state, 'user-settings'),
+  };
+}
+
+return mapStateToProps;
+```
+
+Which returns data in this format onto the `_networkData` property, details of which can be found [here](#network-response-object)
 
 </p>
 </details>
@@ -722,7 +820,29 @@ TODO
 
 `DataSelectors.makeGetNetworkDataMulti()`
 
-TODO
+Returns a function with the signature
+
+* `(state, identifier)`
+
+Where identifier matches whatever you used in the initial request config.
+
+The useage is like this:
+
+```
+const makeMapStateToProps = () => {
+  const getNetworkDataMulti = NetworkSelectors.makeGetNetworkDataMulti();
+
+  function mapStateToProps(state) {
+    return {
+      _networkData: getNetworkDataMulti(state, 'user-settings'),
+    };
+  }
+
+  return mapStateToProps;
+};
+```
+
+Which returns data in this format onto the `_networkData` property, details of which can be found [here](#network-response-object)
 
 </p>
 </details>
@@ -730,9 +850,23 @@ TODO
 <details><summary>DataSelectors.getNetworkDataMulti()</summary>
 <p>
 
-`DataSelectors.getNetworkDataMulti()`
+`DataSelectors.getNetworkDataMulti(state, identifier)`
 
-TODO
+Where identifier matches whatever you used in the initial request config.
+
+The useage is like this:
+
+```
+function mapStateToProps(state) {
+  return {
+    _networkData: NetworkSelectors.getNetworkDataMulti(state, 'user-settings'),
+  };
+}
+
+return mapStateToProps;
+```
+
+Which returns data in this format onto the `_networkData` property, details of which can be found [here](#network-response-object)
 
 </p>
 </details>
