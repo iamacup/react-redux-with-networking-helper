@@ -92,14 +92,6 @@ function* networkRequestWorker(action) {
 
     if (response.status >= 200 && response.status <= 299) {
       // SUCCESS
-      // work out if we need to do some header setting
-      if (action.config.setGlobalHeaders !== null) {
-        const newAdditionalGlobalHeaders = yield call(action.config.setGlobalHeaders, response.data, response.status);
-
-        if (Array.isArray(newAdditionalGlobalHeaders)) {
-          yield put(globalNetworkingActions.addGlobalHeaders(newAdditionalGlobalHeaders));
-        }
-      }
 
       // see if we need to do some formatting
       let insertData = response.data;
@@ -113,6 +105,15 @@ function* networkRequestWorker(action) {
         }
 
         insertData = yield call(action.config.successFormatHandler, response.data, response.status, existingData, response.headers);
+      }
+
+      // work out if we need to do some header setting
+      if (action.config.setGlobalHeaders !== null) {
+        const newAdditionalGlobalHeaders = yield call(action.config.setGlobalHeaders, insertData, response.data, response.status);
+
+        if (Array.isArray(newAdditionalGlobalHeaders)) {
+          yield put(globalNetworkingActions.addGlobalHeaders(newAdditionalGlobalHeaders));
+        }
       }
 
       // we work out the keys we are going to update / set

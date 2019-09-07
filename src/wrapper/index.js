@@ -57,24 +57,33 @@ export default class REDUX extends Component {
 }
 
 REDUX.defaultProps = {
-  networkExceptionCallback: () => {},
   setDebugWithCurlirize: false,
-  additionalReducers: [],
-  globalErrorFormatter: data => data,
+
+  networkExceptionCallback: () => {},
   globalResponseIntercept: () => {},
+  globalErrorFormatter: data => data,
+
+  additionalReducers: [],
+  
   networkTestAction: {},
   networkTestDelay: 10000,
+  
   persistorStorageOverride: null,
 };
 
 REDUX.propTypes = {
-  networkExceptionCallback: PropTypes.func,
   setDebugWithCurlirize: PropTypes.bool,
-  additionalReducers: PropTypes.array,
-  globalErrorFormatter: PropTypes.func,
+
+  networkExceptionCallback: PropTypes.func,
   globalResponseIntercept: PropTypes.func,
-  children: PropTypes.any.isRequired,
+  globalErrorFormatter: PropTypes.func,
+
+  additionalReducers: PropTypes.array,
+
   networkTestAction: PropTypes.object,
   networkTestDelay: PropTypes.number,
+  
   persistorStorageOverride: PropTypes.any,
+
+  children: PropTypes.any.isRequired,
 };

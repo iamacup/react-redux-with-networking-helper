@@ -114,6 +114,42 @@ For some selectors we allow for caching, that caching is applied to the `makeGet
 
 There are two different API's - the Data API and the Network API. There is no link from the Data API to the Network API, but there is a link from the Network API to the Data API - that is to say, network requests can modify the 'global state'.
 
+## The ReduxWrapper API
+
+You can pass any of these as properties to the `<ReduxWrapper>` component, all are optional.
+
+| Property | Default | Descriptioon                                                      
+| --- | ---
+| `setDebugWithCurlirize` | `false` | Will print all network out as curl commands
+| `networkExceptionCallback` | `(err) => {}` | Is called for any exceptions that occur in axios, *application order* can be seen [here](#network-request-flow)
+| `globalResponseIntercept` | `(obj) => {}` | Is called for all network responses<br>like this
+
+{
+        type: 'error',
+        insertData: dataToState,
+        responseData: err.response.data,
+        responseStatusCode: err.response.status,
+        responseHeaders: err.response.headers,
+      }
+
+
+  setDebugWithCurlirize: false,
+
+  networkExceptionCallback: () => {},
+  globalResponseIntercept: () => {},
+  globalErrorFormatter: data => data,
+
+  additionalReducers: [],
+  
+  networkTestAction: {},
+  networkTestDelay: 10000,
+  
+  persistorStorageOverride: null,
+
+
+
+
+
 ## The Data API
 
 #### Actions (DataActions)
@@ -489,8 +525,6 @@ console.log(this.props.globalData.userAlertsCounter); // contains teh value in u
 
 ##### Starting a Network Transaction
 
-TODO flow chart of a network request here
-
 Network transactions have a variety of configuration options, all detailed in the `NetworkActions.start*****` documentation, but fundementally there are two different types of request, and it matters because of how you will access them with the selectors:
 
  * Single - has an identifier, and a state - good for *getting an individual users details*
@@ -502,6 +536,17 @@ In addition, there are two types of data when it comes to network request
  * The response data - usually it is expected that this be dumped onto the global state and be accessed with the `DataSelectors` - you need to see the `responseTarget` parameter for more information in the `NetworkActions.start*****`
 
 The framework provides massive flexibility in how you handle response data, errors etc. but **the main idea is that the networking component updates the global state.**
+
+##### Network request flow
+
+| >= 200 && <= 299 | Other status codes | Exception                                                         
+| --- | --- | ---
+| `requestConfig.successFormatHandler` | *`wrapper.globalErrorFormatter`* | *`wrapper.networkExceptionCallback`*
+| `requestConfig.setGlobalHeaders` | `requestConfig.errorFormatHandler` | `requestConfig.errorFormatHandler`
+| `requestConfig.keyExtractor` | `requestConfig.errorCallback` | *`wrapper.globalResponseIntercept`* 
+| `requestConfig.preDataInsertCleanupHandler` | *`wrapper.globalResponseIntercept`*
+| `requestConfig.successCallback` |
+| *`wrapper.globalResponseIntercept`* |
 
 
 <details><summary>NetworkActions.startGET(config), NetworkActions.startPOST(config), NetworkActions.startPATCH(config)</summary>
@@ -544,7 +589,7 @@ The configuration object has these parameters:
 
 **Lifecyle hooks**
 
-TODO this list in the order they are applied
+*application order* can be seen [here](#network-request-flow)
 
 | Value | Required | Default | Description                                                                 
 | --- | --- | --- | --- 
@@ -554,7 +599,7 @@ TODO this list in the order they are applied
 | `errorCallback(formattedData, originalData, statusCode, responseHeaders) => {}` | `false` | `null` | called when there is an error, inverse of `successCallback`
 | `preDataInsertCleanupHandler(existingData, modifiedKeys, networkState, responseHeaders) => {}` | `false` | `null` | this function is called right before successFormatHandler and the insert action for response target which can be used to remove / clean up old state changes
 | `keyExtractor(item, index) => 'key'` | `false` | `null` | this is called for every element returned by the `successFormatHandler` and should return a key that will be used to allocate the data to the `responseTarget.[key]` location. if it is null then it will not be used and the data will be just dumped onto the object, this will not be called if the data returned from `successFormatHandler` is not an array
-| `setGlobalHeaders(data, statusCode) => {}` | `false` | `null` | This is called before the success format handler with the same conditions as success format handler (200 <> 299 status) - any thing return by this needs to be an array of `{ name: 'header-name', value: 'header-value' }` and will update the global headers so every subsequent request has this thign in it, useful for authentication. If it does not return an array then nothing happens.
+| `setGlobalHeaders(formattedData, originalData, statusCode) => {}` | `false` | `null` | This is called before the success format handler with the same conditions as success format handler (200 <> 299 status) - any thing return by this needs to be an array of `{ name: 'header-name', value: 'header-value' }` and will update the global headers so every subsequent request has this thign in it, useful for authentication. If it does not return an array then nothing happens.
 
 
 **Retrying, timeouts and multiple similar requests**
@@ -570,8 +615,6 @@ TODO remove / rework the following params
 
 ```
 {
-
-
   // this is set as a Content-Type header for post requests, will be ignored if any Content-Type header is already set, set to null to just not use this at all
   postDefaultContentType: 'application/json',
 
@@ -797,4 +840,6 @@ TODO
  * We don't properly cleanup the timeouts when calling LOBAL_NETWORK_CLEAR_NETWORK_DATA
  * rework the postDefaultContentType config option on requests - should be a global config / with optional override to the specific request
  * Update the docs to show the default value selection on the global data
+ * need to do something to support state migrations
+ * There is probably a problem when using the 'delete in flight' 
 
