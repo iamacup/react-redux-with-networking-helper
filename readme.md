@@ -2,11 +2,11 @@
 
 This project aims to produce a low code, high productivity solution to working with React/Redux and networking.
 
-It stores networking state and 'global' state seperately, but provides tools for combining the two effectively - keeping a single source of truth about your application while simultaniously updating it with network data.
+It stores networking state and 'global' state separately, but provides tools for combining the two effectively - keeping a single source of truth about your application while simultaneously updating it with network data.
 
 In addition, the library provides some utilities to handle disconnection and network retry as well as 'expiration' of network requests over time.
 
-This project was built for React Native, although it's dependencies should all work with a React DOM project.
+This project was built for React Native, although its dependencies should all work with a React DOM project.
 
 **Note:** This project is still in it's early stages and does have a TODO list, any feedback is welcome.
 
@@ -90,7 +90,7 @@ TODO
 
 ## Locations
 
-Locations are an important part of the library. They are specified as string with the folowing syntax and effectively they dictate where you read and write data:
+Locations are an important part of the library. They are specified as string with the following syntax and effectively they dictate where you read and write data:
 
 `some.location.in.the.data.store`
 
@@ -104,7 +104,7 @@ You can also include array indices like this
 
 ## Selectors - makeGet and get
 
-Bear in mind that under the hood we are using [Reselect](https://github.com/reduxjs/reselect) for our selectors, there are, therefore, two types of every selector - you can read about this in detail in the [reselect documentation here](https://github.com/reduxjs/reselect#sharing-selectors-with-props-across-multiple-component-instances) - but the cheatsheet version is - if you only have **one instance** of a component you can use the `get***` function, if you will have **multiple instances** of a component you need to use the equivelant `makeGet***` function to build your selectors. To be on the safe side, use the `makeGet***` - it only adds 1 additional line of code.
+Bear in mind that under the hood we are using [Reselect](https://github.com/reduxjs/reselect) for our selectors, there are, therefore, two types of every selector - you can read about this in detail in the [reselect documentation here](https://github.com/reduxjs/reselect#sharing-selectors-with-props-across-multiple-component-instances) - but the cheatsheet version is - if you only have **one instance** of a component you can use the `get***` function, if you will have **multiple instances** of a component you need to use the equivalent `makeGet***` function to build your selectors. To be on the safe side, use the `makeGet***` - it only adds 1 additional line of code.
 
 For some selectors we allow for caching, that caching is applied to the `makeGet***` functions so that instead of having multiple components with many functions that do the same thing, we have multiple components with a single function that does the same thing.
 
@@ -124,7 +124,7 @@ You can pass any of these as properties to the `<ReduxWrapper>` component, all a
 | `setDebugWithCurlirize` | `false` | Will print all network out as curl commands
 | `networkExceptionCallback` | `(err) => {}` | Is called for any exceptions that occur in axios, *application order* can be seen [here](#network-request-flow)
 | `globalResponseIntercept` | `(obj) => {}` | Is called for all network responses with the obj formatted like this:<br><br>{<br>`    type`: 'error' or 'success',<br>`    insertData`: 'data after relevant formatters are applied',<br>`    responseData`: 'the original network response data' or 'exception object if responseStatusCode is -1',<br>`    responseStatusCode:` 'response status code' or '-1 if an exception',<br>`    responseHeaders`: 'response headers' or 'empty object if an exception',<br>}<br><br>*application order* can be seen [here](#network-request-flow)
-| `globalErrorFormatter` | `(data) => data` | This is called for any error condition, see order [here](#network-request-flow), and should return any data format you want to use in subsequent items, this is useful because often you want to format your error data from an API in a specifc, and global way.
+| `globalErrorFormatter` | `(data) => data` | This is called for any error condition, see order [here](#network-request-flow), and should return any data format you want to use in subsequent items, this is useful because often you want to format your error data from an API in a specific, and global way.
 | `additionalReducers` | `[]` | Should contain any additional reducers that you want to include in the state, you can fire actions that will be picked up by these in any connected component.
 | `networkTestAction` | `{}` | If specified as some `NetworkActions.start***` action, this will be used to test for network connectivity changes once a downtime event is triggered. I.e.<br><br> `networkTestAction={NetworkActions.startGET({url: 'https://some-test-url'})}`.<br><br>All network connections that fail, with this specified, will be queued up if they have `autoRetryOnNetworkReconnection` set to true on their individual config and then will be actioned when this network request succeeds
 | `networkTestDelay` | `10000` | This is the delay between uptime checks on the `networkTestAction`
@@ -224,7 +224,7 @@ setData(location, data, keys);
 
 ```
 
-in contrast, not using a keys array gives this behavior:
+in contrast, not using a keys array gives this behaviour:
 
 ```
 const data = [{one: true}, {two: true}, {three: true}];
@@ -376,7 +376,7 @@ console.log(this.props.alertsCounter); // reads 0 if not defined, something else
 
 ##### Multiple locations
 
-Now, there is a problem with these selectors, while they may provide you with convenience, the whole point of selectors is to select just the data that changes so you don't end up render thrashing. Because of the structure of these selectors, they can lead to bad performance if missused. In general, it is better to overselect data (i.e. select staticData instead of staticData.one and staticData.two, even i there is staticData.three in the state) or use multiple selectors on the same component that have good re-use and caching than to use these.
+Now, there is a problem with these selectors, while they may provide you with convenience, the whole point of selectors is to select just the data that changes so you don't end up render thrashing. Because of the structure of these selectors, they can lead to bad performance if miss-used. In general, it is better to over-select data (i.e. select staticData instead of staticData.one and staticData.two, even i there is staticData.three in the state) or use multiple selectors on the same component that have good re-use and caching than to use these.
 
 What this is useful for is assigning data to specific keys, all from the same data structure, like `current, previous, next` in a news article app, for instance.
 
@@ -525,10 +525,10 @@ console.log(this.props.globalData.userAlertsCounter); // contains teh value in u
 
 ##### Starting a Network Transaction
 
-Network transactions have a variety of configuration options, all detailed in the `NetworkActions.start*****` documentation, but fundementally there are two different types of request, and it matters because of how you will access them with the selectors:
+Network transactions have a variety of configuration options, all detailed in the `NetworkActions.start*****` documentation, but fundamentally there are two different types of request, and it matters because of how you will access them with the selectors:
 
  * Single - has an identifier, and a state - good for *getting an individual users details*
- * Multiple - has an identifier, a sub identifier, and each identifier/sub identifer combo has its own state - good for *getting paginated data*
+ * Multiple - has an identifier, a sub identifier, and each identifier/sub identifier combo has its own state - good for *getting paginated data*
 
 In addition, there are two types of data when it comes to network request
 
@@ -554,7 +554,7 @@ The framework provides massive flexibility in how you handle response data, erro
 There are a variety of ways to modify headers for an individual request - here is the order in which they are applied to any request:
 
  * `ReduxWrapper.defaultContentTypes` is applied for the specific request type, setting the `Content-Type` header if not null
- * The global headers are then collected, these are set through either `requestConfig.setGlobalHeaders` or directly through `NetworkActions.setGlobalHeaders`. If there is a `Content-Type` header, it will overwride the header set in the previous step.
+ * The global headers are then collected, these are set through either `requestConfig.setGlobalHeaders` or directly through `NetworkActions.setGlobalHeaders`. If there is a `Content-Type` header, it will override the header set in the previous step.
  * The request specific headers are then applied from `requestConfig.additionalHeaders`, overwriting anything from the previous two steps if there are conflicts
 
 
@@ -578,7 +578,7 @@ The `requestConfig` object has these parameters:
 | `url` | `true` | `null` | This is the fully qualified domain name for the request
 | `data` | `false` | `{}` | The request data, ignored for GET requests
 | `multi` | `false` | `false` | if this is true, there can be more than 1 request for the same identifier, see `multiIdentifier`
-| `additionalHeaders` | `false` | `[]` | array of additional headers in the format of `{ name: 'header-name', value: 'header-value' }` to be added on, these are applied LAST so can overwride global headers
+| `additionalHeaders` | `false` | `[]` | array of additional headers in the format of `{ name: 'header-name', value: 'header-value' }` to be added on, these are applied LAST so can override global headers
 
 
 **Where to put the response**
@@ -595,7 +595,7 @@ The `requestConfig` object has these parameters:
 | --- | --- | --- | --- 
 | `identifier` | `false` | `null` | Identifier used to monitor the status of this request if you don't need to hook into the response at all set this to null, check out the [selectors section](#selectors-networkselectors) for more info
 | `multiIdentifier` | `false` | `null` | If this is not null, it will be used as a sub identifier (see selectors to understand how it is used), if null and multi is set to true, uuid will be generated, check out the [selectors section](#selectors-networkselectors) for more info
-| `dumpSuccessResponseToNetworkState` | `false` | `false` | if this is set to true, the data will be put onto the network state (specified by `identifier/multiIdentifier`). Setting this to true will not stop anything that happened with responseTarget and it's chain of actions.
+| `dumpSuccessResponseToNetworkState` | `false` | `false` | if this is set to true, the data will be put onto the network state (specified by `identifier/multiIdentifier`). Setting this to true will not stop anything that happened with responseTarget and its chain of actions.
 
 
 **Lifecyle hooks**
@@ -605,7 +605,7 @@ The `requestConfig` object has these parameters:
 | Value | Required | Default | Description                                                                 
 | --- | --- | --- | --- 
 | `successFormatHandler(data, statusCode, existingData, responseHeaders) => data` | `false` | `null` | a function that is called with any 200 <> 299 status code, can return an array of objects to be dumped into the `responseTarget` - the `keyExtractor` will be called to distribute them properly, if this does not return an array, it will not call the `keyExtractor` at all and just dump onto the `responseTarget`, if the `keyExtractor` is null, the response will just be dumped onto the `responseTarget` - `existingData` is NULL if no `responseTarget` specified, or is the current data in the store at that target
-| `errorFormatHandler(data, statusCode, err, responseHeaders) => { return data; }` | `false` | `null` | a function that is called with any other status code not captured by the success handler, whatever is returned by this function is returned as the data attribute when there is an error, note it is possible for this function to recieve an exception (Error) type as well as an actual response, the statusCode will be -1 if this is the case with the error as the third argument, and the error.toString() value as the data
+| `errorFormatHandler(data, statusCode, err, responseHeaders) => { return data; }` | `false` | `null` | a function that is called with any other status code not captured by the success handler, whatever is returned by this function is returned as the data attribute when there is an error, note it is possible for this function to receive an exception (Error) type as well as an actual response, the statusCode will be -1 if this is the case with the error as the third argument, and the error.toString() value as the data
 | `successCallback(formattedData, originalData, statusCode, responseHeaders) => {}` | `false` | `null` | a function that is called with any 200 <> 299 status code after the sucessFormatHandler in case you need to do any side effects as a result of a success condition
 | `errorCallback(formattedData, originalData, statusCode, responseHeaders) => {}` | `false` | `null` | called when there is an error, inverse of `successCallback`
 | `preDataInsertCleanupHandler(existingData, modifiedKeys, networkState, responseHeaders) => {}` | `false` | `null` | this function is called right before successFormatHandler and the insert action for response target which can be used to remove / clean up old state changes
@@ -681,7 +681,7 @@ Remember that `makeGet***` will return a function to select on and so the value 
 
 ##### Network response object
 
-When usiong a network selector there are a couple of scenarios to worry about:
+When using a network selector there are a couple of scenarios to worry about:
 
 1. Single request selectors always return an object with the structure outlined below
 2. Multi request selectors return a keyed object, if a request was started for a specific key then it will have the structure outline below, if it is not started it will be undefined - this is a limitation because we do not know ahead of time what the 'multi identifiers' will be so can't get the selector to populate them with 'not started'
@@ -764,7 +764,7 @@ Returns a function with the signature
 
 Where identifier matches whatever you used in the initial request config.
 
-The useage is like this:
+The usage is like this:
 
 ```
 const makeMapStateToProps = () => {
@@ -794,7 +794,7 @@ Which returns data in this format onto the `_networkData` property, details of w
 
 Where identifier matches whatever you used in the initial request config.
 
-The useage is like this:
+The usage is like this:
 
 ```
 function mapStateToProps(state) {
@@ -826,7 +826,7 @@ Returns a function with the signature
 
 Where identifier matches whatever you used in the initial request config.
 
-The useage is like this:
+The usage is like this:
 
 ```
 const makeMapStateToProps = () => {
@@ -854,7 +854,7 @@ Which returns data in this format onto the `_networkData` property, details of w
 
 Where identifier matches whatever you used in the initial request config.
 
-The useage is like this:
+The usage is like this:
 
 ```
 function mapStateToProps(state) {
@@ -949,7 +949,7 @@ This library provides a bunch of actions, reducers, selectors and sagas to perfo
 <details><summary>Actions and Reducers</summary>
 <p>
 
-You can specify your own actions and reducers by passing in the apropriate reducers to the `additionalReducers` prop on the `ReduxWrapper` component. Once you have specified them, you can call dispatch whatever actions they respond to from any connected component.
+You can specify your own actions and reducers by passing in the appropriate reducers to the `additionalReducers` prop on the `ReduxWrapper` component. Once you have specified them, you can call dispatch whatever actions they respond to from any connected component.
 
 </p>
 </details>
@@ -983,7 +983,7 @@ TODO - not supported yet
  * TODO convenience method for selector creation so you don't have to reference immer directly
  * Removal / invalidation of global headers?
  * Some kind of debugging switch for selectors etc. to see performance 
- * a way to select between shalow and deep equity checking
+ * a way to select between shallow and deep equity checking
  * Cleanup the locationStore variable in the referenceData selector
  * A flag to toggle the redux logging middleware
  * Update the dependencies - don't need strict version numbers on stuff like prop-types etc.
