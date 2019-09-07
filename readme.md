@@ -967,42 +967,29 @@ You can build your own selectors anywhere, and just include them - react-redux-w
 <details><summary>Sagas</summary>
 <p>
 
-TODO
+TODO - not supported yet
 
 </p>
 </details>
 
 
-## Internal structure and how it all slots together (for contributors?)
-
-TODO
 
 
 ## TODO
 
- * Finish the documentation / make some example apps / refactor it
+ * Make examples and finish documentation
  * Provide additional / custom sagas to the initialisation of the library
- * Support all network methods (PATCH/GET/POST only right now)
- * Pass back headers to the various request lifecycle hooks
  * Test on dom react (non react-native) project / environment
- * Propper dev setup / linting etc.
  * TODO convenience method for selector creation so you don't have to reference immer directly
- * Probably loads of other stuff ;-)
  * Removal / invalidation of global headers?
  * Some kind of debugging switch for selectors etc. to see performance 
  * a way to select between shalow and deep equity checking
  * Cleanup the locationStore variable in the referenceData selector
  * A flag to toggle the redux logging middleware
- * stateUpdatedKeys - is it used?
  * Update the dependencies - don't need strict version numbers on stuff like prop-types etc.
  * When cancelling active network request SAGA forks, the axios transactions are not interrupted and will still complete and return, this can lead to performance problems as the underlying device will probably limit how many connections are allowed, meaning its possible to take ages for things to complete even though the sagas are dead and don't care about the response
  * We don't properly cleanup the timeouts when calling LOBAL_NETWORK_CLEAR_NETWORK_DATA
- * Update the docs to show the default value selection on the global data
- * need to do something to support state migrations
- * There is probably a problem when using the 'delete in flight' - cancelInFlightWithSameIdentifiers - thing and multiple network requests overwriting the storage - should shift to useing the internal id when cancelInFlightWithSameIdentifiers is fale or just not store them??? 
+ * need to do something to support state migrations as is supported by react-redux
  * test what will happen is networkTestAction is not specified - we need to not store up network requests if we have no way of unblocking them etc.
- * check how autoRetryOnNetworkReconnection works - assume only things with this epcfieid will rely on networkTestAction?
- * toggle for the persistor at all
- * some documentation about how headers are applied
- * unify how headers are handled (name: value: object or key: value)
+ * toggle if you want to even use the persistor
 
