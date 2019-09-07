@@ -43,10 +43,10 @@ const generateIdentifier = ({ config }) => {
 };
 
 export default function* performNetworkRequest(action) {
-  if(action.config.cancelInFlightWithSameIdentifiers === true)
+  if (action.config.cancelInFlightWithSameIdentifiers === true) {
     const taskIdentifier = yield call(generateIdentifier, action);
 
-    if(taskIdentifier !== null && taskIdentifier in tasks) {
+    if (taskIdentifier !== null && taskIdentifier in tasks) {
       yield cancel(tasks[taskIdentifier]);
     }
 
@@ -283,7 +283,7 @@ function* networkRequestWorker(action) {
       yield put(globalNetworkingActions.networkResponse(action.internalID, STATES.ERROR, dataToState, err.response.status));
     }
   } finally {
-    if(action.config.cancelInFlightWithSameIdentifiers === true)
+    if (action.config.cancelInFlightWithSameIdentifiers === true) {
       const taskIdentifier = yield call(generateIdentifier, action);
 
       if (taskIdentifier !== null) {
