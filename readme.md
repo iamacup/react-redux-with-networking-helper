@@ -122,15 +122,7 @@ You can pass any of these as properties to the `<ReduxWrapper>` component, all a
 | --- | --- | ---
 | `setDebugWithCurlirize` | `false` | Will print all network out as curl commands
 | `networkExceptionCallback` | `(err) => {}` | Is called for any exceptions that occur in axios, *application order* can be seen [here](#network-request-flow)
-| `globalResponseIntercept` | `(obj) => {}` | Is called for all network responses like this<br>test
-
-{
-        type: 'error',
-        insertData: dataToState,
-        responseData: err.response.data,
-        responseStatusCode: err.response.status,
-        responseHeaders: err.response.headers,
-      }
+| `globalResponseIntercept` | `(obj) => {}` | Is called for all network responses with the obj formatted like this:<br><br>`{<br>type: 'error' | 'success',<br>insertData: <data after relevant formatters are applied>,<br>responseData: <the original network response data> | <exception object if responseStatusCode is -1>,<br>responseStatusCode: <response status code> | <-1 if an exception>,<br>responseHeaders: <response headers> | <empty object if an exception>,<br>}`
 
 
   setDebugWithCurlirize: false,
@@ -541,24 +533,22 @@ The framework provides massive flexibility in how you handle response data, erro
 
 | >= 200 && <= 299 | Other status codes | Exception                                                         
 | --- | --- | ---
-| `requestConfig.successFormatHandler` | *`wrapper.globalErrorFormatter`* | *`wrapper.networkExceptionCallback`*
+| `requestConfig.successFormatHandler` | *`ReduxWrapper.globalErrorFormatter`* | *`ReduxWrapper.networkExceptionCallback`*
 | `requestConfig.setGlobalHeaders` | `requestConfig.errorFormatHandler` | `requestConfig.errorFormatHandler`
-| `requestConfig.keyExtractor` | `requestConfig.errorCallback` | *`wrapper.globalResponseIntercept`* 
-| `requestConfig.preDataInsertCleanupHandler` | *`wrapper.globalResponseIntercept`*
+| `requestConfig.keyExtractor` | `requestConfig.errorCallback` | *`ReduxWrapper.globalResponseIntercept`* 
+| `requestConfig.preDataInsertCleanupHandler` | *`ReduxWrapper.globalResponseIntercept`*
 | `requestConfig.successCallback` |
-| *`wrapper.globalResponseIntercept`* |
+| *`ReduxWrapper.globalResponseIntercept`* |
 
 
 <details><summary>NetworkActions.startGET(config), NetworkActions.startPOST(config), NetworkActions.startPATCH(config)</summary>
 <p>
 
- * `NetworkActions.startGET(config)` 
- * `NetworkActions.startPOST(config)` 
- * `NetworkActions.startPATCH(config)`
+ * `NetworkActions.startGET(requestConfig)` 
+ * `NetworkActions.startPOST(requestConfig)` 
+ * `NetworkActions.startPATCH(requestConfig)`
 
-The configuration object has these parameters:
-
-###### The main stuff
+The `requestConfig` object has these parameters:
 
 **The request data**
 
@@ -841,5 +831,5 @@ TODO
  * rework the postDefaultContentType config option on requests - should be a global config / with optional override to the specific request
  * Update the docs to show the default value selection on the global data
  * need to do something to support state migrations
- * There is probably a problem when using the 'delete in flight' 
+ * There is probably a problem when using the 'delete in flight' - cancelInFlightWithSameIdentifiers - thing and multiple network requests overwriting the storage - should shift to useing the internal id when cancelInFlightWithSameIdentifiers is fale or just not store them??? 
 
