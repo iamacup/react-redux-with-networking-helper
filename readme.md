@@ -2,9 +2,9 @@
 
 #### Required versions**
 
-**react** > 16.8.6
+ * **react** > 16.8.6
 or
-**react-native** > 0.60.0 
+ * **react-native** > 0.60.0 
 
 #### Project
 
