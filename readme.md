@@ -6,6 +6,12 @@
  * or
  * **react-native** > 0.60.0 
 
+
+#### Hooks
+
+Hooks are fully supported, examples and documentation includes `connect` based and hook based methods for implementation.
+
+
 #### Project
 
 This project aims to produce a low code, high productivity solution to working with React/Redux and networking.
@@ -45,6 +51,17 @@ Then you are ready to go - you can connect up any components to the store and us
 ## Examples
 
 TODO
+
+<details><summary>Basic Data API</summary>
+<p>
+
+This is not a real use case! In this example we use the data API like the this.setState API, note that this example will persist over reloads and, in the case of react-native, application crashes.
+
+ * [no hooks](./ting)
+ * [hooks](./ting)
+
+</p>
+</details>
 
 * Using the Data API
 * Using the Networking API
@@ -1009,6 +1026,7 @@ TODO - not supported yet
 
 ## TODO
 
+ * Update docs examples with hooks everywhere
  * Make examples and finish documentation
  * Provide additional / custom sagas to the initialisation of the library
  * Test on dom react (non react-native) project / environment
