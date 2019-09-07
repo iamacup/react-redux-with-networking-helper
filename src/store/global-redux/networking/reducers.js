@@ -19,6 +19,7 @@ const initialState = {
 
   // meta data
   _globalHeaders: [],
+  _globalData: {},
   _globalCallbacks: {
     _networkExceptionCallback: () => {},
     _responseInterceptCallback: () => {},
@@ -145,8 +146,11 @@ export const globalNetworkReducer = createReducer(initialState, {
 
     draft._globalHeaders = draft._globalHeaders.concat(action.headers);
   }),
-  GLOBAL_NETWORK_ADD_INTERNAL_GLOBAL_CALLBACKS: (state, action) => produce(state, (draft) => {
+  GLOBAL_NETWORK_SET_INTERNAL_GLOBAL_CALLBACKS: (state, action) => produce(state, (draft) => {
     draft._globalCallbacks[action.key] = action.value;
+  }),
+  GLOBAL_NETWORK_SET_INTERNAL_GLOBAL_DATA: (state, action) => produce(state, (draft) => {
+    draft._globalData[action.key] = action.value;
   }),
   GLOBAL_NETWORK_CLEANUP_CANCELLED_REQUEST: (state, action) => produce(state, (draft) => {
     delete draft._internals[action.internalID];

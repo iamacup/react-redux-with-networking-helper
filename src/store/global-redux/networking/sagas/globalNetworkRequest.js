@@ -10,7 +10,7 @@ import * as globalNetworkingActions from '../actions';
 import * as globalReferenceDataActions from '../../referenceData/actions';
 
 import {
-  getGlobalHeaders, getGlobalCallback, getNetworkConnectivityState, getNetworkData, getNetworkDataMulti,
+  getGlobalHeaders, getGlobalCallbacks, getAllGlobalData, getNetworkConnectivityState, getNetworkData, getNetworkDataMulti,
 } from '../selectors';
 import { getData } from '../../referenceData/selectors';
 
@@ -61,9 +61,15 @@ function* networkRequestWorker(action) {
   const globalHeaders = yield select(getGlobalHeaders);
   const connectivityState = yield select(getNetworkConnectivityState);
 
-  const globalErrorFormatter = yield select(getGlobalCallback, 'errorFormatterCallback');
-  const globalResponseIntercept = yield select(getGlobalCallback, 'responseInterceptCallback');
-  const networkExceptionHandler = yield select(getGlobalCallback, 'networkExceptionCallback');
+  const globalCallbacks = yield select(getGlobalCallbacks);
+
+  const globalErrorFormatter = globalCallbacks._errorFormatterCallback;
+  const globalResponseIntercept = globalCallbacks._responseInterceptCallback;
+  const networkExceptionHandler = globalCallbacks._networkExceptionCallback;
+
+  const globalData = yield select(getAllGlobalData);
+
+  const defaultContentTypes = globalData._defaultContentTypes;
 
   let currentResponseState = null;
 
@@ -81,8 +87,8 @@ function* networkRequestWorker(action) {
       action.method,
       action.config.url,
       action.config.data,
-      action.config.postDefaultContentType,
       globalHeaders.concat(action.config.additionalHeaders),
+      defaultContentTypes,
     );
 
     // we assume this means there is network connectivity because we got some kidn of response
@@ -112,7 +118,7 @@ function* networkRequestWorker(action) {
         const newAdditionalGlobalHeaders = yield call(action.config.setGlobalHeaders, insertData, response.data, response.status);
 
         if (Array.isArray(newAdditionalGlobalHeaders)) {
-          yield put(globalNetworkingActions.addGlobalHeaders(newAdditionalGlobalHeaders));
+          yield put(globalNetworkingActions.setGlobalHeaders(newAdditionalGlobalHeaders));
         }
       }
 

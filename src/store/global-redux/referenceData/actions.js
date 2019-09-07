@@ -17,13 +17,6 @@ export function mergeData(location, data, keys = null) {
   };
 }
 
-export function clearWithIgnoreList(ignores) {
-  return {
-    type: 'GLOBAL_REFERENCE_DATA_CLEAR_WITH_IGNORES',
-    ignores,
-  };
-}
-
 export function concatFirstData(location, data) {
   return {
     type: 'GLOBAL_REFERENCE_DATA_CONCAT_FIRST_DATA',
@@ -52,6 +45,13 @@ export function unsetKeysAtLocation(location, keys) {
     type: 'GLOBAL_REFERENCE_DATA_UNSET_KEYS_AT_LOCATION',
     location,
     keys,
+  };
+}
+
+export function clearWithIgnoreList(ignores) {
+  return {
+    type: 'GLOBAL_REFERENCE_DATA_CLEAR_WITH_IGNORES',
+    ignores,
   };
 }
 

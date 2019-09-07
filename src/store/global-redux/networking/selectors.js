@@ -37,7 +37,15 @@ const networkDataMulti = (state, identifier) => {
   return initialNetworkResponseStateMulti;
 };
 
+// get network data stuff here
 export const makeGetNetworkData = () => createDeepEqualitySelector(
+  [
+    networkData,
+  ],
+  data => data,
+);
+
+export const getNetworkData = createDeepEqualitySelector(
   [
     networkData,
   ],
@@ -51,15 +59,6 @@ export const makeGetNetworkDataMulti = () => createDeepEqualitySelector(
   data => data,
 );
 
-
-export const getNetworkData = createDeepEqualitySelector(
-  [
-    networkData,
-  ],
-  data => data,
-);
-
-
 export const getNetworkDataMulti = createDeepEqualitySelector(
   [
     networkDataMulti,
@@ -67,7 +66,7 @@ export const getNetworkDataMulti = createDeepEqualitySelector(
   data => data,
 );
 
-// Global headers
+// global headers
 export const getGlobalHeaders = createDeepEqualitySelector(
   [
     state => state.globalNetworkReducer._globalHeaders,
@@ -113,9 +112,23 @@ export const makeGetNetworkConnectivityState = () => createDeepEqualitySelector(
 );
 
 // global callbacks
+export const getGlobalCallbacks = createDeepEqualitySelector(
+  [
+    (state, identifier) => state.globalNetworkReducer._globalCallbacks,
+  ],
+  data => data,
+);
+
+export const makeGetGlobalCallbacks = () => createDeepEqualitySelector(
+  [
+    getGlobalCallbacks,
+  ],
+  data => data,
+);
+
 export const getGlobalCallback = createDeepEqualitySelector(
   [
-    (state, identifier) => state.globalNetworkReducer._globalCallbacks['_' + identifier],
+    (state, identifier) => state.globalNetworkReducer._globalCallbacks[identifier],
   ],
   data => data,
 );
@@ -123,6 +136,35 @@ export const getGlobalCallback = createDeepEqualitySelector(
 export const makeGetGlobalCallback = () => createDeepEqualitySelector(
   [
     getGlobalCallback,
+  ],
+  data => data,
+);
+
+// global data
+export const getAllGlobalData = createDeepEqualitySelector(
+  [
+    (state, identifier) => state.globalNetworkReducer._globalData,
+  ],
+  data => data,
+);
+
+export const makeGetAllGlobalData = () => createDeepEqualitySelector(
+  [
+    getAllGlobalData,
+  ],
+  data => data,
+);
+
+export const getGlobalData = createDeepEqualitySelector(
+  [
+    (state, identifier) => state.globalNetworkReducer._globalData[identifier],
+  ],
+  data => data,
+);
+
+export const makeGetGlobalData = () => createDeepEqualitySelector(
+  [
+    getGlobalData,
   ],
   data => data,
 );

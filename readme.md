@@ -111,22 +111,39 @@ For some selectors we allow for caching, that caching is applied to the `makeGet
 
 ## APIs
 
-There are two different API's - the Data API and the Network API. There is no link from the Data API to the Network API, but there is a link from the Network API to the Data API - that is to say, network requests can modify the 'global state'.
+There are two different API's that have actions and selectors: the **Data API** and the **Network API**. There is no link from the Data API to the Network API, but there is a link from the Network API to the Data API - that is to say, network requests can modify the 'global state'.
+
+In addition, there is the **ReduxWrapper API** which is the main component you will use to wrap your application.
 
 ## The ReduxWrapper API
 
 You can pass any of these as properties to the `<ReduxWrapper>` component, all are optional.
 
-| Property | Default | Descriptioon                                                      
+| Property | Default | Description                                                      
 | --- | --- | ---
 | `setDebugWithCurlirize` | `false` | Will print all network out as curl commands
 | `networkExceptionCallback` | `(err) => {}` | Is called for any exceptions that occur in axios, *application order* can be seen [here](#network-request-flow)
 | `globalResponseIntercept` | `(obj) => {}` | Is called for all network responses with the obj formatted like this:<br><br>{<br>`    type`: 'error' or 'success',<br>`    insertData`: 'data after relevant formatters are applied',<br>`    responseData`: 'the original network response data' or 'exception object if responseStatusCode is -1',<br>`    responseStatusCode:` 'response status code' or '-1 if an exception',<br>`    responseHeaders`: 'response headers' or 'empty object if an exception',<br>}<br><br>*application order* can be seen [here](#network-request-flow)
 | `globalErrorFormatter` | `(data) => data` | This is called for any error condition, see order [here](#network-request-flow), and should return any data format you want to use in subsequent items, this is useful because often you want to format your error data from an API in a specifc, and global way.
 | `additionalReducers` | `[]` | Should contain any additional reducers that you want to include in the state, you can fire actions that will be picked up by these in any connected component.
-| `networkTestAction` | `{}` | If specified as some `NetworkActions.start***` action, this will be used to test for network connectivity changes once a downtime event is triggered. I.e.<br><br> `networkTestAction={NetworkActions.startGET({url: 'https://some-test-url'})}`.<br><br>All network connections that fail, with this specified, will be queued up if they have `autoRetryOnNetworkReconnection` set to true on their indificual config.
+| `networkTestAction` | `{}` | If specified as some `NetworkActions.start***` action, this will be used to test for network connectivity changes once a downtime event is triggered. I.e.<br><br> `networkTestAction={NetworkActions.startGET({url: 'https://some-test-url'})}`.<br><br>All network connections that fail, with this specified, will be queued up if they have `autoRetryOnNetworkReconnection` set to true on their individual config and then will be actioned when this network request succeeds
 | `networkTestDelay` | `10000` | This is the delay between uptime checks on the `networkTestAction`
 | `persistorStorageOverride` | `null` | Provide an alternative storage method for the persistor, see more [here](#a-note-for-react-native)
+| `defaultContentTypes`| `defaultContentTypesObject` | For each type of request, this object specifies the default value for the `Content-Type` header. This value can and will be overwritten by other headers, see header order of priority [here](#header-order-priority). See below this table for the default values, null set for any method will not apply any value to `Content-Type`
+
+`defaultContentTypesObject` default value
+
+```
+{
+    get: null,
+    post: 'application/json',
+    patch: 'application/json',
+    delete: 'application/json',
+    head: null,
+    options: null,
+    put: 'application/json',
+}
+```
 
 
 ## The Data API
@@ -255,6 +272,22 @@ Removes any keys in the keys array at the location.
 </p>
 </details>
 
+
+<details><summary>DataActions.clearWithIgnoreList(ignores)</summary>
+<p>
+
+`DataActions.clearWithIgnoreList(ignores)`
+
+Removes everything from the state, while ignoring any keys in 'ignores'
+
+This would remove all keys on the global data store except `userObject` and `applicationVersion`
+
+```
+DataActions.clearWithIgnoreList(['userObject', 'applicationVersion'])
+```
+
+</p>
+</details>
 
 
 <details><summary>DataActions.clearAllData()</summary>
@@ -528,12 +561,25 @@ The framework provides massive flexibility in how you handle response data, erro
 | *`ReduxWrapper.globalResponseIntercept`* |
 
 
-<details><summary>NetworkActions.startGET(config), NetworkActions.startPOST(config), NetworkActions.startPATCH(config)</summary>
+##### Header order priority
+
+There are a variety of ways to modify headers for an individual request - here is the order in which they are applied to any request:
+
+ * `ReduxWrapper.defaultContentTypes` is applied for the specific request type, setting the `Content-Type` header if not null
+ * The global headers are then collected, these are set through either `requestConfig.setGlobalHeaders` or directly through `NetworkActions.setGlobalHeaders`. If there is a `Content-Type` header, it will overwride the header set in the previous step.
+ * The request specific headers are then applied from `requestConfig.additionalHeaders`, overwriting anything from the previous two steps if there are conflicts
+
+
+<details><summary>NetworkActions.startGET(requestConfig), NetworkActions.startPOST(requestConfig), NetworkActions.startPATCH(requestConfig), NetworkActions.startDELETE(requestConfig), NetworkActions.startHEAD(requestConfig), NetworkActions.startOPTIONS(requestConfig), NetworkActions.startPUT(requestConfig)</summary>
 <p>
 
  * `NetworkActions.startGET(requestConfig)` 
  * `NetworkActions.startPOST(requestConfig)` 
  * `NetworkActions.startPATCH(requestConfig)`
+ * `NetworkActions.startDELETE(requestConfig)`
+ * `NetworkActions.startHEAD(requestConfig)`
+ * `NetworkActions.startOPTIONS(requestConfig)`
+ * `NetworkActions.startPUT(requestConfig)`
 
 The `requestConfig` object has these parameters:
 
@@ -576,7 +622,7 @@ The `requestConfig` object has these parameters:
 | `errorCallback(formattedData, originalData, statusCode, responseHeaders) => {}` | `false` | `null` | called when there is an error, inverse of `successCallback`
 | `preDataInsertCleanupHandler(existingData, modifiedKeys, networkState, responseHeaders) => {}` | `false` | `null` | this function is called right before successFormatHandler and the insert action for response target which can be used to remove / clean up old state changes
 | `keyExtractor(item, index) => 'key'` | `false` | `null` | this is called for every element returned by the `successFormatHandler` and should return a key that will be used to allocate the data to the `responseTarget.[key]` location. if it is null then it will not be used and the data will be just dumped onto the object, this will not be called if the data returned from `successFormatHandler` is not an array
-| `setGlobalHeaders(formattedData, originalData, statusCode) => {}` | `false` | `null` | This is called before the success format handler with the same conditions as success format handler (200 <> 299 status) - any thing return by this needs to be an array of `{ name: 'header-name', value: 'header-value' }` and will update the global headers so every subsequent request has this thign in it, useful for authentication. If it does not return an array then nothing happens.
+| `setGlobalHeaders(formattedData, originalData, statusCode) => {}` | `false` | `null` | This is called before the success format handler with the same conditions as success format handler (200 <> 299 status) - any thing return by this needs to be an array of `{ name: 'header-name', value: 'header-value' }` and will update the global headers so every subsequent request has this set of headers, useful for authentication. If it does not return an array then nothing happens.
 
 
 **Retrying, timeouts and multiple similar requests**
@@ -588,15 +634,6 @@ The `requestConfig` object has these parameters:
 | `cancelInFlightWithSameIdentifiers` | `false` | `true` | If this is set to true, then we match against some identifier/multiIdentifier combo - if they are the same, any in flight request is cancelled and replaced with the new one.
 
 
-TODO remove / rework the following params
-
-```
-{
-  // this is set as a Content-Type header for post requests, will be ignored if any Content-Type header is already set, set to null to just not use this at all
-  postDefaultContentType: 'application/json',
-
-}
-```
 
 </p>
 </details>
@@ -609,7 +646,7 @@ TODO remove / rework the following params
 
 `NetworkActions.clearNetworkData(identifier)`
 
-TODO
+This will clear all the network response data for a given identifier, regardless of if it is single or multi
 
 </p>
 </details>
@@ -619,7 +656,7 @@ TODO
 
 `NetworkActions.clearAllNetworkData()`
 
-TODO
+This completely clears everything in the network state, setting the whole thing to default, including all headers and anything else.
 
 </p>
 </details>
@@ -627,12 +664,23 @@ TODO
 
 ##### Manipulating global headers
 
-<details><summary>addGlobalHeaders(headers)</summary>
+<details><summary>setGlobalHeaders(headers)</summary>
 <p>
 
-`NetworkActions.addGlobalHeaders(headers)`
+`NetworkActions.setGlobalHeaders(headers)`
 
-TODO
+You can call this to set a global header, see how global headers are applied [here](#header-order-priority). 
+
+Format for `headers` parameter is
+
+```
+[
+  {name: 'Content-Type', value :'application/json'}
+  ....
+]
+```
+
+Any headers in the state with the same name will be overwritten.
 
 </p>
 </details>
@@ -815,11 +863,12 @@ TODO
  * Update the dependencies - don't need strict version numbers on stuff like prop-types etc.
  * When cancelling active network request SAGA forks, the axios transactions are not interrupted and will still complete and return, this can lead to performance problems as the underlying device will probably limit how many connections are allowed, meaning its possible to take ages for things to complete even though the sagas are dead and don't care about the response
  * We don't properly cleanup the timeouts when calling LOBAL_NETWORK_CLEAR_NETWORK_DATA
- * rework the postDefaultContentType config option on requests - should be a global config / with optional override to the specific request
  * Update the docs to show the default value selection on the global data
  * need to do something to support state migrations
  * There is probably a problem when using the 'delete in flight' - cancelInFlightWithSameIdentifiers - thing and multiple network requests overwriting the storage - should shift to useing the internal id when cancelInFlightWithSameIdentifiers is fale or just not store them??? 
  * test what will happen is networkTestAction is not specified - we need to not store up network requests if we have no way of unblocking them etc.
  * check how autoRetryOnNetworkReconnection works - assume only things with this epcfieid will rely on networkTestAction?
  * toggle for the persistor at all
+ * some documentation about how headers are applied
+ * unify how headers are handled (name: value: object or key: value)
 

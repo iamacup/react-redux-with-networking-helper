@@ -48,6 +48,7 @@ export default class REDUX extends Component {
             networkExceptionCallback={this.props.networkExceptionCallback}
             networkTestAction={this.props.networkTestAction}
             networkTestDelay={this.props.networkTestDelay}
+            defaultContentTypes={this.props.defaultContentTypes}
           />
           {this.props.children}
         </PersistGate>
@@ -64,11 +65,21 @@ REDUX.defaultProps = {
   globalErrorFormatter: data => data,
 
   additionalReducers: [],
-  
+
   networkTestAction: {},
   networkTestDelay: 10000,
-  
+
   persistorStorageOverride: null,
+
+  defaultContentTypes: {
+    get: null,
+    post: 'application/json',
+    patch: 'application/json',
+    delete: 'application/json',
+    head: null,
+    options: null,
+    put: 'application/json',
+  },
 };
 
 REDUX.propTypes = {
@@ -82,8 +93,10 @@ REDUX.propTypes = {
 
   networkTestAction: PropTypes.object,
   networkTestDelay: PropTypes.number,
-  
+
   persistorStorageOverride: PropTypes.any,
 
   children: PropTypes.any.isRequired,
+
+  defaultContentTypes: PropTypes.object,
 };

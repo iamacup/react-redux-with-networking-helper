@@ -2,6 +2,8 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import isEqual from 'lodash/isEqual';
+
 import { STATES } from '../../networking/states';
 
 import { isDefined } from '../../lib/isDefined';
@@ -14,10 +16,16 @@ class ReduxServiceMainView extends Component {
     this.props.$setGlobalResponseIntercept(this.props.globalResponseIntercept);
     this.props.$setNetworkExceptionCallback(this.props.networkExceptionCallback);
 
+    this.props.$setDefaultContentTypes(this.props.defaultContentTypes);
+
     this.checkExpired();
   }
 
   componentDidUpdate(prevProps) {
+    if (!isEqual(this.props._defaultContentTypes, prevProps._defaultContentTypes)) {
+      this.props.$setDefaultContentTypes(this.props.defaultContentTypes);
+    }
+
     if (prevProps._globalErrorFormatter !== null && this.props._globalErrorFormatter.toString() !== prevProps._globalErrorFormatter.toString()) {
       this.props.$setGlobalErrorFormatter(this.props.globalErrorFormatter);
     }
@@ -84,21 +92,23 @@ ReduxServiceMainView.defaultProps = {
 };
 
 ReduxServiceMainView.propTypes = {
-  globalErrorFormatter: PropTypes.func.isRequired,
-  networkExceptionCallback: PropTypes.func.isRequired,
-  networkTestAction: PropTypes.object.isRequired,
-  networkTestDelay: PropTypes.number.isRequired,
-  globalResponseIntercept: PropTypes.func.isRequired,
-
   $setGlobalErrorFormatter: PropTypes.func.isRequired,
   $setGlobalResponseIntercept: PropTypes.func.isRequired,
   $setNetworkExceptionCallback: PropTypes.func.isRequired,
   $expireNetworkConnection: PropTypes.func.isRequired,
+  $setDefaultContentTypes: PropTypes.func.isRequired,
 
   _globalErrorFormatter: PropTypes.any,
   _globalResponseIntercept: PropTypes.any,
   _networkExceptionCallback: PropTypes.any,
   _networkData: PropTypes.object.isRequired,
+
+  globalErrorFormatter: PropTypes.func.isRequired,
+  networkExceptionCallback: PropTypes.func.isRequired,
+  networkTestAction: PropTypes.object.isRequired,
+  networkTestDelay: PropTypes.number.isRequired,
+  globalResponseIntercept: PropTypes.func.isRequired,
+  defaultContentTypes: PropTypes.object.isRequired,
 };
 
 export default ReduxServiceMainView;

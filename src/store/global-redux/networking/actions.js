@@ -13,14 +13,13 @@ const defaultGetOptions = {
   successFormatHandler: null,
   errorFormatHandler: null,
   successCallback: null,
-  errorCallback: null, 
-  preDataInsertCleanupHandler: null, 
+  errorCallback: null,
+  preDataInsertCleanupHandler: null,
 
   keyExtractor: null,
   setGlobalHeaders: null,
 
   additionalHeaders: [],
-  postDefaultContentType: 'application/json',
   dumpSuccessResponseToNetworkState: false,
 
   autoRetryOnNetworkReconnection: false,
@@ -44,6 +43,22 @@ export function startPATCH(config) {
   return startRequest(config, 'patch');
 }
 
+export function startDELETE(config) {
+  return startRequest(config, 'delete');
+}
+
+export function startHEAD(config) {
+  return startRequest(config, 'head');
+}
+
+export function startOPTIONS(config) {
+  return startRequest(config, 'options');
+}
+
+export function startPUT(config) {
+  return startRequest(config, 'put');
+}
+
 export function clearNetworkData(identifier) {
   return {
     type: 'GLOBAL_NETWORK_CLEAR_NETWORK_DATA',
@@ -57,7 +72,7 @@ export function clearAllNetworkData() {
   };
 }
 
-export function addGlobalHeaders(headers) {
+export function setGlobalHeaders(headers) {
   return {
     type: 'GLOBAL_NETWORK_ADD_HEADERS',
     headers,
@@ -106,9 +121,17 @@ export function cleanupCancelledRequest(internalID) {
   };
 }
 
-export function addInternalGlobalCallback(key, value) {
+export function setInternalGlobalCallback(key, value) {
   return {
-    type: 'GLOBAL_NETWORK_ADD_INTERNAL_GLOBAL_CALLBACKS',
+    type: 'GLOBAL_NETWORK_SET_INTERNAL_GLOBAL_CALLBACKS',
+    key,
+    value,
+  };
+}
+
+export function setInternalGlobalData(key, value) {
+  return {
+    type: 'GLOBAL_NETWORK_SET_INTERNAL_GLOBAL_DATA',
     key,
     value,
   };
