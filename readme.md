@@ -117,7 +117,10 @@ In addition, there is the **ReduxWrapper API** which is the main component you w
 
 ## The ReduxWrapper API
 
-You can pass any of these as properties to the `<ReduxWrapper>` component, all are optional.
+
+<details><summary>ReduxWrapper properties</summary>
+<p>
+
 
 | Property | Default | Description                                                      
 | --- | --- | ---
@@ -145,6 +148,30 @@ You can pass any of these as properties to the `<ReduxWrapper>` component, all a
 }
 ```
 
+</p>
+</details>
+
+
+<details><summary>ReduxWrapper methods</summary>
+<p>
+
+You can access methods on the ReduxWrapper like this:
+
+```
+<ReduxWrapper
+  ref={(el) => { this.wrapper = el; }}
+>
+  {/* Your app children here */}
+</ReduxWrapper>
+```
+
+| Property | Description                                                      
+| --- | --- | ---
+| `persistorPurge` | Will clear the persistor storage completely.
+
+
+</p>
+</details>
 
 ## The Data API
 
