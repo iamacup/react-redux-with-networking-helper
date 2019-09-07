@@ -14,7 +14,7 @@ It stores networking state and 'global' state separately, but provides tools for
 
 In addition, the library provides some utilities to handle disconnection and network retry as well as 'expiration' of network requests over time.
 
-This project was built for React Native, although its dependencies should all work with a React DOM project.
+This project was built for React Native, although it also works with React DOM
 
 
 ## Getting Started
@@ -23,7 +23,7 @@ First, install the package
 
 `yarn add react-redux-with-networking-helper`
 
-Then you need to wrap your upper most component (usually the one registered with `AppRegistry.registerComponent`) like this:
+Then you need to wrap your upper most component (*react-native:* usually the one registered with `AppRegistry.registerComponent`) like this:
 
 ```
 import { ReduxWrapper } from 'react-redux-with-networking-helper';
@@ -61,7 +61,7 @@ This 'global state' is then updated, either directly through actions on componen
 
 ## Under the Hood
 
-Under the hood we use the following:
+Under the hood we use the following libraries:
 
  * **axios** - for all the networking
  * **react-redux** - for the global state
@@ -109,7 +109,7 @@ You can also include array indices like this
 
 ## Selectors - makeGet and get
 
-Bear in mind that under the hood we are using [Reselect](https://github.com/reduxjs/reselect) for our selectors, there are, therefore, two types of every selector - you can read about this in detail in the [reselect documentation here](https://github.com/reduxjs/reselect#sharing-selectors-with-props-across-multiple-component-instances) - but the cheatsheet version is - if you only have **one instance** of a component you can use the `get***` function, if you will have **multiple instances** of a component you need to use the equivalent `makeGet***` function to build your selectors. To be on the safe side, use the `makeGet***` - it only adds 1 additional line of code.
+Bear in mind that under the hood we are using [Reselect](https://github.com/reduxjs/reselect) for our selectors, there are, therefore, two types of every selector - you can read about this in detail in the [reselect documentation here](https://github.com/reduxjs/reselect#sharing-selectors-with-props-across-multiple-component-instances) - but the cheatsheet version is - if you only have **one instance** of a component you can use the `get***` function, if you will have **multiple instances** of a component you need to use the equivalent `makeGet***` function to build your selectors. To be on the safe side, use the `makeGet***`.
 
 For some selectors we allow for caching, that caching is applied to the `makeGet***` functions so that instead of having multiple components with many functions that do the same thing, we have multiple components with a single function that does the same thing.
 
