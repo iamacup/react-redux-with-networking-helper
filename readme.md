@@ -122,29 +122,8 @@ You can pass any of these as properties to the `<ReduxWrapper>` component, all a
 | --- | ---
 | `setDebugWithCurlirize` | `false` | Will print all network out as curl commands
 | `networkExceptionCallback` | `(err) => {}` | Is called for any exceptions that occur in axios, *application order* can be seen [here](#network-request-flow)
-| `globalResponseIntercept` | `(obj) => {}` | Is called for all network responses<br>like this
+| `globalResponseIntercept` | `(obj) => {}` | Is called for all network responses like this
 
-{
-        type: 'error',
-        insertData: dataToState,
-        responseData: err.response.data,
-        responseStatusCode: err.response.status,
-        responseHeaders: err.response.headers,
-      }
-
-
-  setDebugWithCurlirize: false,
-
-  networkExceptionCallback: () => {},
-  globalResponseIntercept: () => {},
-  globalErrorFormatter: data => data,
-
-  additionalReducers: [],
-  
-  networkTestAction: {},
-  networkTestDelay: 10000,
-  
-  persistorStorageOverride: null,
 
 
 
