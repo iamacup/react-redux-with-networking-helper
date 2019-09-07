@@ -3,7 +3,7 @@
 #### Required versions**
 
  * **react** > 16.8.6
-or
+ * or
  * **react-native** > 0.60.0 
 
 #### Project
