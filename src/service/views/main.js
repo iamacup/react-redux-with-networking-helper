@@ -8,9 +8,13 @@ import { STATES } from '../../networking/states';
 
 import { isDefined } from '../../lib/isDefined';
 
-let timeoutRef = null;
-
 class ReduxServiceMainView extends Component {
+  constructor(props) {
+    super(props);
+
+    timeoutRef = null;
+  }
+
   componentDidMount() {
     this.props.$setGlobalErrorFormatter(this.props.globalErrorFormatter);
     this.props.$setGlobalResponseIntercept(this.props.globalResponseIntercept);
@@ -45,9 +49,15 @@ class ReduxServiceMainView extends Component {
 
     // we have regained connectivity
     if (this.props._networkConnectivityState === true && prevProps._networkConnectivityState === false) {
-      if (timeoutRef !== null) {
-        clearTimeout(timeoutRef);
+      if (this.timeoutRef !== null) {
+        clearTimeout(this.timeoutRef);
       }
+    }      
+  }
+
+  componentWillUnmount() {
+    if(this.timeoutRef !== null) {
+      clearTimeout(this.timeoutRef);
     }
   }
 
@@ -69,7 +79,7 @@ class ReduxServiceMainView extends Component {
   }
 
   checkNetwork(run) {
-    timeoutRef = setTimeout(() => {
+    this.timeoutRef = setTimeout(() => {
       this.checkNetwork(true);
     }, this.props.networkTestDelay);
 
