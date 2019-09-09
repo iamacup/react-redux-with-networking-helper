@@ -55,7 +55,7 @@ Then you are ready to go - you can connect up any components to the store and us
 <details><summary>Basic Data API</summary>
 <p>
 
-This is not a real use case! In this example we use the data API like the this.setState API, note that this example will persist over reloads and application crashes due to the persistor.
+In this example we use the data API like the this.setState API, note that this example will persist over reloads and application crashes due to the persistor. You would probably not make a [controlled input](https://reactjs.org/docs/forms.html#controlled-components), using this library instead of setState, in most cases - this is just for the example.
 
  * [no hooks](./examples/simple)
  * [hooks](./examples/simplehooks)
@@ -136,6 +136,8 @@ Bear in mind that under the hood we are using [Reselect](https://github.com/redu
 
 For some selectors we allow for caching, that caching is applied to the `makeGet***` functions so that instead of having multiple components with many functions that do the same thing, we have multiple components with a single function that does the same thing.
 
+When using hooks, the same rules apply but with different syntax, full explination [here](https://react-redux.js.org/next/api/hooks) with documentation and examples below.
+
 
 ## APIs
 
@@ -191,6 +193,10 @@ You can access methods on the ReduxWrapper like this:
 >
   {/* Your app children here */}
 </ReduxWrapper>
+
+...
+
+this.wrapper.METHOD()
 ```
 
 | Function | Description                                                      
@@ -1011,7 +1017,6 @@ You can specify your own actions and reducers by passing in the appropriate redu
 
 
 <details><summary>Selectors</summary>
-<p>
 
 You can build your own selectors anywhere, and just include them - react-redux-with-networking-helper uses reselect to build it's selectors, but you can use anything.
 
@@ -1034,6 +1039,7 @@ TODO - not supported yet
 
  * Update docs examples with hooks everywhere
  * Make examples and finish documentation
+ * Put hook examples into documentation and include imports in the in-line API ddlcs
  * Provide additional / custom sagas to the initialisation of the library
  * Test on dom react (non react-native) project / environment
  * TODO convenience method for selector creation so you don't have to reference immer directly
@@ -1048,4 +1054,5 @@ TODO - not supported yet
  * need to do something to support state migrations as is supported by react-redux
  * test what will happen is networkTestAction is not specified - we need to not store up network requests if we have no way of unblocking them etc.
  * toggle if you want to even use the persistor
+ * one setDebugWithCurl is set on the wrapper, it can't be unset
 

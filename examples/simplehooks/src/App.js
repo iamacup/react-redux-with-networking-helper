@@ -1,8 +1,8 @@
 import React from 'react';
 
-import {ReduxWrapper} from 'react-redux-with-networking-helper';
-
 import {SafeAreaView, StatusBar} from 'react-native';
+
+import {ReduxWrapper} from 'react-redux-with-networking-helper';
 
 import BasicBox from './features/basicBox';
 
