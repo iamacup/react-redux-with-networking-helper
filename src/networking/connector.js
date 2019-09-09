@@ -9,17 +9,7 @@ const setDebugWithCurlirize = () => {
 
 // Content-Type
 
-const startRequest = (method, url, data, additionalHeaders, defaultContentTypes) => {
-  const headers = {};
-
-  if (isDefined(defaultContentTypes[method])) {
-    headers['Content-Type'] = defaultContentTypes[method];
-  }
-
-  for (const headerItem of additionalHeaders) {
-    headers[headerItem.name] = headerItem.value;
-  }
-
+const startRequest = (method, url, data, headers) => {
   if (method === 'get' || method === 'head' || method === 'options') {
     return axios.request({
       method,

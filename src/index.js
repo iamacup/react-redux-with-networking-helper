@@ -1,5 +1,5 @@
 
-import { connect as RRConnect, useSelector as RRuseSelector, useDispatch as RRuseDispatch } from 'react-redux';
+import { connect as RRConnect } from 'react-redux';
 
 import Wrapper from './wrapper';
 import { STATES } from './networking/states';
@@ -20,5 +20,3 @@ export const NetworkSelectors = NSelectors;
 export const DataSelectors = DSelectors;
 
 export const connect = RRConnect;
-export const useSelector = RRuseSelector;
-export const useDispatch = RRuseDispatch;

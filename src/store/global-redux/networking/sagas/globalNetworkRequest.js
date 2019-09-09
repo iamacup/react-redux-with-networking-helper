@@ -3,7 +3,7 @@ import {
   put, call, select, fork, take, cancelled, cancel,
 } from 'redux-saga/effects';
 
-// import { isDefined } from '@lib/isDefined';
+import { isDefined } from '../../../../lib/isDefined';
 
 import connector from '../../../../networking/connector';
 import * as globalNetworkingActions from '../actions';
@@ -84,15 +84,24 @@ function* networkRequestWorker(action) {
     currentResponseState = yield select(getNetworkData, action.config.identifier);
   }
 
-  try {
+  const sendHeaders = {};
+
+  if (isDefined(defaultContentTypes[action.method])) {
+    sendHeaders['Content-Type'] = defaultContentTypes[action.method];
+  }
+    
+  for (const headerItem of globalHeaders.concat(action.config.additionalHeaders)) {
+    sendHeaders[headerItem.name] = headerItem.value;
+  }
+
+  try {    
     // we make the intiial request
     const response = yield call(
       connector.startRequest,
       action.method,
       action.config.url,
       action.config.data,
-      globalHeaders.concat(action.config.additionalHeaders),
-      defaultContentTypes,
+      sendHeaders,
     );
 
     // we assume this means there is network connectivity because we got some kidn of response
@@ -172,6 +181,7 @@ function* networkRequestWorker(action) {
         responseData: response.data,
         responseStatusCode: response.status,
         responseHeaders: response.headers,
+        sendHeaders,
       });
 
       // drop the success onto the network state if needed
@@ -205,6 +215,7 @@ function* networkRequestWorker(action) {
         responseData: response.data,
         responseStatusCode: response.status,
         responseHeaders: response.headers,
+        sendHeaders,
       });
 
       // finish
@@ -241,6 +252,7 @@ function* networkRequestWorker(action) {
         responseData: err,
         responseStatusCode: exceptionStatusCode,
         responseHeaders: {},
+        sendHeaders,
       });
 
       // finish
@@ -277,6 +289,7 @@ function* networkRequestWorker(action) {
         responseData: err.response.data,
         responseStatusCode: err.response.status,
         responseHeaders: err.response.headers,
+        sendHeaders,
       });
 
       // finish
