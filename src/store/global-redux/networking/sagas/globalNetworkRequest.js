@@ -84,9 +84,9 @@ function* networkRequestWorker(action) {
     currentResponseState = yield select(getNetworkData, action.config.identifier);
   }
 
-  const sendHeaders = {};
+  const sendHeaders = {};  
 
-  if (isDefined(defaultContentTypes[action.method])) {
+  if (isDefined(defaultContentTypes) && isDefined(defaultContentTypes[action.method])) {
     sendHeaders['Content-Type'] = defaultContentTypes[action.method];
   }
     

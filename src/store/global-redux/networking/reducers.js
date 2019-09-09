@@ -17,15 +17,17 @@ const initialState = {
   _timeouts: {}, // this is stuff for tracking network timeouts etc.
   _internals: {}, // this is for managing the internal state and meta data of an individual request
 
-  // meta data
+  // meta data (can be cleared)
   _globalHeaders: [],
+  _networkConnectivityState: true,
+
+  // meta data (can not be cleared)
   _globalData: {},
   _globalCallbacks: {
     _networkExceptionCallback: () => {},
     _responseInterceptCallback: () => {},
     _errorFormatterCallback: () => {},
   },
-  _networkConnectivityState: true,
 };
 
 export const globalNetworkReducer = createReducer(initialState, {
@@ -165,7 +167,9 @@ export const globalNetworkReducer = createReducer(initialState, {
       // it will eventually clean itself up in GLOBAL_NETWORK_EXPIRE_ITEM
     }
   }),
-  GLOBAL_NETWORK_CLEAR_ALL_NETWORK_DATA: (state, action) => initialState,
+  GLOBAL_NETWORK_CLEAR_ALL_NETWORK_DATA: (state, action) => {
+    return {...initialState, _globalData: state._globalData, _globalCallbacks: state._globalCallbacks};
+  },
   GLOBAL_NETWORK_SET_CONNECTIVITY_STATE_DOWN: (state, action) => produce(state, (draft) => {
     draft._networkConnectivityState = false;
   }),

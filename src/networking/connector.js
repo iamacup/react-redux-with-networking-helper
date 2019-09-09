@@ -7,8 +7,6 @@ const setDebugWithCurlirize = () => {
   curlirize(axios);
 };
 
-// Content-Type
-
 const startRequest = (method, url, data, headers) => {
   if (method === 'get' || method === 'head' || method === 'options') {
     return axios.request({
