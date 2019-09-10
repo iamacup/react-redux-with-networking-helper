@@ -54,19 +54,46 @@ const DoNotSaveTransform = createTransform(
   { whitelist: ['globalNetworkReducer'] },
 );
 
+let ignoreKeys = [];
+
+// we do a transform to not save certain data as specified by the doNotPersistKeys
+const DoNotPersistKeysTransform = createTransform(
+  // transform state on its way to being serialized and persisted.
+  (inboundState) => {
+    const response = {};
+
+    for (const key in inboundState) {
+      if (!ignoreKeys.includes(key)) {
+        response[key] = inboundState[key];
+      }
+    }
+
+    return response;
+  },
+  // transform state being rehydrated
+  outboundState => outboundState,
+  // define which reducers this transform gets called for.
+  { whitelist: ['globalReferenceDataReducer'] },
+);
 
 const config = {
   key: 'root',
   storage,
   blacklist: [],
   debug: true,
-  transforms: [DoNotSaveTransform],
+  transforms: [DoNotSaveTransform, DoNotPersistKeysTransform],
 };
 
 let persistor = null;
 let store = null;
 
-const initiateStore = (userReducers, persistorStorageOverride) => {
+const updateDoNotPersistKeys = (doNotPersistKeys) => {
+  ignoreKeys = doNotPersistKeys;
+};
+
+const initiateStore = (userReducers, persistorStorageOverride, doNotPersistKeys) => {
+  ignoreKeys = doNotPersistKeys;
+
   if (persistorStorageOverride !== null) {
     config.storage = persistorStorageOverride;
   }
@@ -108,4 +135,5 @@ const getStoreObjects = () => ({ persistor, store });
 export default {
   getStoreObjects,
   initiateStore,
+  updateDoNotPersistKeys,
 };

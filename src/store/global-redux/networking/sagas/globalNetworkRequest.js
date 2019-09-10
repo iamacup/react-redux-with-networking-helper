@@ -84,17 +84,17 @@ function* networkRequestWorker(action) {
     currentResponseState = yield select(getNetworkData, action.config.identifier);
   }
 
-  const sendHeaders = {};  
+  const sendHeaders = {};
 
   if (isDefined(defaultContentTypes) && isDefined(defaultContentTypes[action.method])) {
     sendHeaders['Content-Type'] = defaultContentTypes[action.method];
   }
-    
+
   for (const headerItem of globalHeaders.concat(action.config.additionalHeaders)) {
     sendHeaders[headerItem.name] = headerItem.value;
   }
 
-  try {    
+  try {
     // we make the intiial request
     const response = yield call(
       connector.startRequest,

@@ -1040,6 +1040,7 @@ TODO - not supported yet
  * Update docs examples with hooks everywhere
  * Make examples and finish documentation
  * Put hook examples into documentation and include imports in the in-line API ddlcs
+ * Add doNotPersistKeys to docs
  * Provide additional / custom sagas to the initialisation of the library
  * Test on dom react (non react-native) project / environment
  * TODO convenience method for selector creation so you don't have to reference immer directly

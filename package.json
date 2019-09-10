@@ -1,6 +1,6 @@
 {
   "name": "react-redux-with-networking-helper",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "A tool to make dropping redux into a project easy, fast, and provide a good way to do networking as well",
   "main": "src/index.js",
   "keywords": [

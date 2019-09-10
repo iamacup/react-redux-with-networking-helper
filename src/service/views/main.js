@@ -12,7 +12,7 @@ class ReduxServiceMainView extends Component {
   constructor(props) {
     super(props);
 
-    timeoutRef = null;
+    this.timeoutRef = null;
   }
 
   componentDidMount() {
@@ -52,11 +52,11 @@ class ReduxServiceMainView extends Component {
       if (this.timeoutRef !== null) {
         clearTimeout(this.timeoutRef);
       }
-    }      
+    }
   }
 
   componentWillUnmount() {
-    if(this.timeoutRef !== null) {
+    if (this.timeoutRef !== null) {
       clearTimeout(this.timeoutRef);
     }
   }

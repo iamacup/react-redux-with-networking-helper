@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash/isEqual';
 
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/es/integration/react';
@@ -17,7 +18,7 @@ export default class REDUX extends Component {
   constructor(props) {
     super(props);
 
-    StoreConfig.initiateStore(this.props.additionalReducers, this.props.persistorStorageOverride);
+    StoreConfig.initiateStore(this.props.additionalReducers, this.props.persistorStorageOverride, this.props.doNotPersistKeys);
 
     const { persistor, store } = StoreConfig.getStoreObjects();
 
@@ -28,6 +29,12 @@ export default class REDUX extends Component {
   componentDidMount() {
     if (this.props.setDebugWithCurlirize === true) {
       connector.setDebugWithCurlirize();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!isEqual(this.props.doNotPersistKeys, prevProps.doNotPersistKeys)) {
+      StoreConfig.updateDoNotPersistKeys(this.props.doNotPersistKeys);
     }
   }
 
@@ -80,6 +87,8 @@ REDUX.defaultProps = {
     options: null,
     put: 'application/json',
   },
+
+  doNotPersistKeys: [],
 };
 
 REDUX.propTypes = {
@@ -99,4 +108,6 @@ REDUX.propTypes = {
   children: PropTypes.any.isRequired,
 
   defaultContentTypes: PropTypes.object,
+
+  doNotPersistKeys: PropTypes.array,
 };
