@@ -3,7 +3,6 @@
 
 import { createStore, compose, applyMiddleware } from 'redux';
 import { persistStore, persistCombineReducers, createTransform } from 'redux-persist';
-import storage from 'redux-persist/es/storage';
 import { createLogger } from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import produce from 'immer';
@@ -78,7 +77,7 @@ const DoNotPersistKeysTransform = createTransform(
 
 const config = {
   key: 'root',
-  storage,
+  storage: null,
   blacklist: [],
   debug: true,
   transforms: [DoNotSaveTransform, DoNotPersistKeysTransform],
@@ -94,9 +93,7 @@ const updateDoNotPersistKeys = (doNotPersistKeys) => {
 const initiateStore = (userReducers, persistorStorageOverride, doNotPersistKeys) => {
   ignoreKeys = doNotPersistKeys;
 
-  if (persistorStorageOverride !== null) {
-    config.storage = persistorStorageOverride;
-  }
+  config.storage = persistorStorageOverride;
 
   let finalReducers = {};
 

@@ -18,7 +18,13 @@ export default class REDUX extends Component {
   constructor(props) {
     super(props);
 
-    StoreConfig.initiateStore(this.props.additionalReducers, this.props.persistorStorageOverride, this.props.doNotPersistKeys);
+    let storage = this.props.persistorStorageOverride;
+
+    if(this.props.persistorStorageOverride === null) {
+      storage = require('redux-persist/es/storage');
+    }
+
+    StoreConfig.initiateStore(this.props.additionalReducers, storage, this.props.doNotPersistKeys);
 
     const { persistor, store } = StoreConfig.getStoreObjects();
 
