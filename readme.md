@@ -1056,4 +1056,5 @@ TODO - not supported yet
  * test what will happen is networkTestAction is not specified - we need to not store up network requests if we have no way of unblocking them etc.
  * toggle if you want to even use the persistor
  * one setDebugWithCurl is set on the wrapper, it can't be unset
+ * document the immer import/export on the wrapper
 
