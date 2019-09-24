@@ -95,15 +95,33 @@ Under the hood we use the following libraries:
 
 ## A note for react-native
 
+You need to pass in a storage mechanism explicitly as of redux-persist v6.0.0, this is how you do this:
+
+```
+import AsyncStorage from '@react-native-community/async-storage';
+
+...
+
+<ReduxWrapper
+  persistorStorageOverride={ AsyncStorage }
+<
+...
+</ReduxWrapper>
+
+...
+
+```
+
 There are problems with react native on android with large states when usinig the redux-persist library. If you want to work around this, you need to install [redux-persist-filesystem-storage](https://github.com/robwalkerco/redux-persist-filesystem-storage) into your project and link it correctly, then pass the storage into the Wrapper like this:
 
 ```
 import FilesystemStorage from 'redux-persist-filesystem-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 import { Platform } from 'react-native';
 ...
 
 <ReduxWrapper
-  persistorStorageOverride={ Platform.OS === 'android' ? FilesystemStorage : null }
+  persistorStorageOverride={ Platform.OS === 'android' ? FilesystemStorage : AsyncStorage }
 <
 ...
 </ReduxWrapper>
