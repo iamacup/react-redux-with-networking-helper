@@ -1055,6 +1055,7 @@ TODO - not supported yet
 
 ## TODO
 
+ * Documentation on how we export immer for import in other projects (convenience, immerProduce)
  * Update docs examples with hooks everywhere
  * Make examples and finish documentation
  * Put hook examples into documentation and include imports in the in-line API ddlcs

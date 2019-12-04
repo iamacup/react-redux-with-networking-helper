@@ -20,7 +20,7 @@ export default class REDUX extends Component {
 
     let storage = this.props.persistorStorageOverride;
 
-    if(this.props.persistorStorageOverride === null) {
+    if (this.props.persistorStorageOverride === null) {
       storage = require('redux-persist/es/storage');
     }
 
