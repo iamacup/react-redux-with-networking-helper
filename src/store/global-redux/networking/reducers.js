@@ -3,7 +3,6 @@
 /* eslint no-param-reassign: 0 */
 
 import produce from 'immer';
-import uuidv4 from 'uuid/v4';
 import createReducer from '../../../lib/createReducer';
 
 import { isDefined } from '../../../lib/isDefined';
@@ -167,11 +166,11 @@ export const globalNetworkReducer = createReducer(initialState, {
       // it will eventually clean itself up in GLOBAL_NETWORK_EXPIRE_ITEM
     }
   }),
-  GLOBAL_NETWORK_CLEAR_ALL_NETWORK_DATA: (state, action) => ({ ...initialState, _globalData: state._globalData, _globalCallbacks: state._globalCallbacks }),
-  GLOBAL_NETWORK_SET_CONNECTIVITY_STATE_DOWN: (state, action) => produce(state, (draft) => {
+  GLOBAL_NETWORK_CLEAR_ALL_NETWORK_DATA: state => ({ ...initialState, _globalData: state._globalData, _globalCallbacks: state._globalCallbacks }),
+  GLOBAL_NETWORK_SET_CONNECTIVITY_STATE_DOWN: state => produce(state, (draft) => {
     draft._networkConnectivityState = false;
   }),
-  GLOBAL_NETWORK_SET_CONNECTIVITY_STATE_UP: (state, action) => produce(state, (draft) => {
+  GLOBAL_NETWORK_SET_CONNECTIVITY_STATE_UP: state => produce(state, (draft) => {
     draft._networkConnectivityState = true;
   }),
   GLOBAL_NETWORK_EXPIRE_ITEM: (state, action) => produce(state, (draft) => {

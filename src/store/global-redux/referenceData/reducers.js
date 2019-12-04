@@ -105,5 +105,5 @@ export const globalReferenceDataReducer = createReducer(initialState, {
       delete ref[location][key];
     }
   }),
-  GLOBAL_REFERENCE_DATA_CLEAR_ALL_DATA: (state, action) => initialState,
+  GLOBAL_REFERENCE_DATA_CLEAR_ALL_DATA: (/* state, action */) => initialState,
 });

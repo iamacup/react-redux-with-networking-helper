@@ -13,7 +13,7 @@ import sagas from './sagas';
 // we use a transform to not persist in flight network data
 const DoNotSaveTransform = createTransform(
   // transform state on its way to being serialized and persisted.
-  (inboundState, key) => {
+  (inboundState/* , key */) => {
     const _responsesPre = produce(inboundState._responses, (draft) => {
       for (const itemKey in inboundState._responses) {
         const data = inboundState._responses[itemKey];

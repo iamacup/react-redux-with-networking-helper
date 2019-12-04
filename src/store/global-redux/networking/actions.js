@@ -30,56 +30,6 @@ const defaultGetOptions = {
 };
 
 
-/* EXTERNAL */
-export function startGET(config) {
-  return startRequest(config, 'get');
-}
-
-export function startPOST(config) {
-  return startRequest(config, 'post');
-}
-
-export function startPATCH(config) {
-  return startRequest(config, 'patch');
-}
-
-export function startDELETE(config) {
-  return startRequest(config, 'delete');
-}
-
-export function startHEAD(config) {
-  return startRequest(config, 'head');
-}
-
-export function startOPTIONS(config) {
-  return startRequest(config, 'options');
-}
-
-export function startPUT(config) {
-  return startRequest(config, 'put');
-}
-
-export function clearNetworkData(identifier) {
-  return {
-    type: 'GLOBAL_NETWORK_CLEAR_NETWORK_DATA',
-    identifier,
-  };
-}
-
-export function clearAllNetworkData() {
-  return {
-    type: 'GLOBAL_NETWORK_CLEAR_ALL_NETWORK_DATA',
-  };
-}
-
-export function setGlobalHeaders(headers) {
-  return {
-    type: 'GLOBAL_NETWORK_ADD_HEADERS',
-    headers,
-  };
-}
-
-
 /* INTERNAL */
 
 export function startRequest(config, method) {
@@ -153,5 +103,54 @@ export function setConnectivityDown() {
 export function setConnectivityUp() {
   return {
     type: 'GLOBAL_NETWORK_SET_CONNECTIVITY_STATE_UP',
+  };
+}
+
+/* EXTERNAL */
+export function startGET(config) {
+  return startRequest(config, 'get');
+}
+
+export function startPOST(config) {
+  return startRequest(config, 'post');
+}
+
+export function startPATCH(config) {
+  return startRequest(config, 'patch');
+}
+
+export function startDELETE(config) {
+  return startRequest(config, 'delete');
+}
+
+export function startHEAD(config) {
+  return startRequest(config, 'head');
+}
+
+export function startOPTIONS(config) {
+  return startRequest(config, 'options');
+}
+
+export function startPUT(config) {
+  return startRequest(config, 'put');
+}
+
+export function clearNetworkData(identifier) {
+  return {
+    type: 'GLOBAL_NETWORK_CLEAR_NETWORK_DATA',
+    identifier,
+  };
+}
+
+export function clearAllNetworkData() {
+  return {
+    type: 'GLOBAL_NETWORK_CLEAR_ALL_NETWORK_DATA',
+  };
+}
+
+export function setGlobalHeaders(headers) {
+  return {
+    type: 'GLOBAL_NETWORK_ADD_HEADERS',
+    headers,
   };
 }

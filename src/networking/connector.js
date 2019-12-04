@@ -1,7 +1,6 @@
 
 import axios from 'axios';
 import curlirize from 'axios-curlirize';
-import { isDefined } from '../lib/isDefined';
 
 const setDebugWithCurlirize = () => {
   curlirize(axios);

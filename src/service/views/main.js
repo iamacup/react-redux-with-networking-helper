@@ -6,8 +6,6 @@ import isEqual from 'lodash/isEqual';
 
 import { STATES } from '../../networking/states';
 
-import { isDefined } from '../../lib/isDefined';
-
 class ReduxServiceMainView extends Component {
   constructor(props) {
     super(props);
@@ -107,11 +105,15 @@ ReduxServiceMainView.propTypes = {
   $setNetworkExceptionCallback: PropTypes.func.isRequired,
   $expireNetworkConnection: PropTypes.func.isRequired,
   $setDefaultContentTypes: PropTypes.func.isRequired,
+  $runNetworkTestAction: PropTypes.func.isRequired,
 
   _globalErrorFormatter: PropTypes.any,
   _globalResponseIntercept: PropTypes.any,
   _networkExceptionCallback: PropTypes.any,
   _networkData: PropTypes.object.isRequired,
+  _defaultContentTypes: PropTypes.object.isRequired,
+  _networkConnectivityState: PropTypes.bool.isRequired,
+  _timeouts: PropTypes.array.isRequired,
 
   globalErrorFormatter: PropTypes.func.isRequired,
   networkExceptionCallback: PropTypes.func.isRequired,

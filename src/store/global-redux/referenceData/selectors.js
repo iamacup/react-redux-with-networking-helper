@@ -1,7 +1,6 @@
 
 // import { createSelector } from 'reselect';
 
-import merge from 'lodash/merge';
 import createDeepEqualitySelector from '../../../lib/createDeepEqualitySelector';
 import { isDefined } from '../../../lib/isDefined';
 
