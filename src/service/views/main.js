@@ -113,7 +113,7 @@ ReduxServiceMainView.propTypes = {
   _networkData: PropTypes.object.isRequired,
   _defaultContentTypes: PropTypes.object.isRequired,
   _networkConnectivityState: PropTypes.bool.isRequired,
-  _timeouts: PropTypes.array.isRequired,
+  _timeouts: PropTypes.object.isRequired,
 
   globalErrorFormatter: PropTypes.func.isRequired,
   networkExceptionCallback: PropTypes.func.isRequired,
