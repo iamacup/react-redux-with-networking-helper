@@ -2860,9 +2860,9 @@ getpass@^0.1.1:
     assert-plus "^1.0.0"
 
 glob-parent@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/glob-parent/-/glob-parent-5.0.0.tgz#1dc99f0f39b006d3e92c2c284068382f0c20e954"
-  integrity sha512-Z2RwiujPRGluePM6j699ktJYxmPpJKCfpGA13jz2hmFZC7gKetzrWvg5KN3+OsIFmydGyZ1AVwERCq1w/ZZwRg==
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/glob-parent/-/glob-parent-5.1.2.tgz#869832c58034fe68a4093c17dc15e8340d8401c4"
+  integrity sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==
   dependencies:
     is-glob "^4.0.1"
 
@@ -5304,13 +5304,13 @@ react-proxy@^1.1.7:
     lodash "^4.6.1"
     react-deep-force-update "^1.0.0"
 
-react-redux-with-networking-helper@^0.0.20:
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/react-redux-with-networking-helper/-/react-redux-with-networking-helper-0.0.20.tgz#6c322e7f5b2739ad2717b21a9c9d2a1870878532"
-  integrity sha512-HY/61HVZXgcEpFzvXRBd3evY/GDCeSpFUL7qB+TcyO4nMY6DaLO7p8DCkei1A8HjobyH1Lk2UbDleZHvbUoCgA==
+react-redux-with-networking-helper@^0.0.21:
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/react-redux-with-networking-helper/-/react-redux-with-networking-helper-0.0.21.tgz#dbe422ac894c8c82bbed4deba668df30c005c7e8"
+  integrity sha512-BHG19dEPYZSMDBisVA/wPYaaS9qCkuC6O9oUDRumU5MVsLGDl7BZa64bIIEF++LG8Y26jtpGNtpTCdcp51aGkA==
   dependencies:
     axios "0.19.0"
-    axios-curlirize "https://github.com/iamacup/axios-curlirize.git#7aefdee"
+    axios-curlirize "git+https://github.com/iamacup/axios-curlirize.git#7aefdee"
     immer "3.1.3"
     lodash "4.17.15"
     prop-types "15.7.2"
