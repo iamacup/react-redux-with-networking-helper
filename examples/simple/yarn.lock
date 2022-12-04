@@ -2011,9 +2011,9 @@ decamelize@^1.1.1, decamelize@^1.2.0:
   integrity sha1-9lNNFRSCabIDUue+4m9QH5oZEpA=
 
 decode-uri-component@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.0.tgz#eb3913333458775cb84cd1a1fae062106bb87545"
-  integrity sha1-6zkTMzRYd1y4TNGh+uBiEGu4dUU=
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.2.tgz#e69dbe25d37941171dd540e024c444cd5188e1e9"
+  integrity sha512-FqUYQ+8o158GyGTrMFJms9qh3CqTKvAqgqsTnkLI8sKu0028orqBhxNMFkFen0zGyg6epACD32pjVk58ngIErQ==
 
 deep-diff@^0.3.5:
   version "0.3.8"
@@ -5304,13 +5304,13 @@ react-proxy@^1.1.7:
     lodash "^4.6.1"
     react-deep-force-update "^1.0.0"
 
-react-redux-with-networking-helper@^0.0.20:
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/react-redux-with-networking-helper/-/react-redux-with-networking-helper-0.0.20.tgz#6c322e7f5b2739ad2717b21a9c9d2a1870878532"
-  integrity sha512-HY/61HVZXgcEpFzvXRBd3evY/GDCeSpFUL7qB+TcyO4nMY6DaLO7p8DCkei1A8HjobyH1Lk2UbDleZHvbUoCgA==
+react-redux-with-networking-helper@^0.0.21:
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/react-redux-with-networking-helper/-/react-redux-with-networking-helper-0.0.21.tgz#dbe422ac894c8c82bbed4deba668df30c005c7e8"
+  integrity sha512-BHG19dEPYZSMDBisVA/wPYaaS9qCkuC6O9oUDRumU5MVsLGDl7BZa64bIIEF++LG8Y26jtpGNtpTCdcp51aGkA==
   dependencies:
     axios "0.19.0"
-    axios-curlirize "https://github.com/iamacup/axios-curlirize.git#7aefdee"
+    axios-curlirize "git+https://github.com/iamacup/axios-curlirize.git#7aefdee"
     immer "3.1.3"
     lodash "4.17.15"
     prop-types "15.7.2"
